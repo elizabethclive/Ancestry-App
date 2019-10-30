@@ -1,4 +1,6 @@
 package Handler;
 
-public class PersonHandler {
+import com.sun.net.httpserver.HttpHandler;
+
+public class PersonHandler implements HttpHandler {
 }
