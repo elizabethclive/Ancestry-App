@@ -83,8 +83,8 @@ public class Database {
                     "EventType text not null, " +
                     "Year int not null, " +
                     "primary key (EventID), " +
-                    "foreign key (AssociatedUsername) references Users(Username), " +
-                    "foreign key (PersonID) references Persons(PersonID)" +
+                    "foreign key (AssociatedUsername) references User(Username), " +
+                    "foreign key (PersonID) references Person(PersonID)" +
                     ");" +
                     "CREATE TABLE IF NOT EXISTS User " +
                     "(" +
@@ -96,7 +96,13 @@ public class Database {
                     "gender text not null, " +
                     "personID int not null, " +
                     "primary key (username), " +
-                    "foreign key (PersonID) references Persons(PersonID)" +
+                    "foreign key (PersonID) references Person(PersonID)" +
+                    ");" +
+                    "CREATE TABLE IF NOT EXISTS AuthToken " +
+                    "(" +
+                    "token text not null unique, " +
+                    "username text not null, " +
+                    "foreign key (username) references User(username)" +
                     ");" +
                     "CREATE TABLE IF NOT EXISTS Person " +
                     "(" +
@@ -109,9 +115,9 @@ public class Database {
                     "motherID int not null, " +
                     "spouseID int not null, " +
                     "primary key (id), " +
-                    "foreign key (fatherID) references Persons(PersonID)" +
-                    "foreign key (motherID) references Persons(PersonID)" +
-                    "foreign key (spouseID) references Persons(PersonID)" +
+                    "foreign key (fatherID) references Person(PersonID)" +
+                    "foreign key (motherID) references Person(PersonID)" +
+                    "foreign key (spouseID) references Person(PersonID)" +
                     ");";
 
             stmt.executeUpdate(sql);

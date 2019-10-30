@@ -4,30 +4,30 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import DAO.DataAccessException;
+import Model.AuthToken;
 
 /*
-    POST REQUEST ONE
-	The ListGamesHandler is the HTTP handler that processes
-	incoming HTTP requests that contain the "/games/list" URL path.
-	
-	Notice that ListGamesHandler implements the HttpHandler interface,
+	The ClaimRouteHandler is the HTTP handler that processes
+	incoming HTTP requests that contain the "/routes/claim" URL path.
+
+	Notice that ClaimRouteHandler implements the HttpHandler interface,
 	which is defined by Java.  This interface contains only one method
 	named "handle".  When the HttpServer object (declared in the Server class)
-	receives a request containing the "/games/list" URL path, it calls 
-	ListGamesHandler.handle() which actually processes the request.
+	receives a request containing the "/routes/claim" URL path, it calls
+	ClaimRouteHandler.handle() which actually processes the request.
 */
 public class ClearHandler implements HttpHandler {
 
-    // Handles HTTP requests containing the "/games/list" URL path.
-    // The "exchange" parameter is an HttpExchange object, which is
-    // defined by Java.
-    // In this context, an "exchange" is an HTTP request/response pair
-    // (i.e., the client and server exchange a request and response).
     // The HttpExchange object gives the handler access to all of the
     // details of the HTTP request (Request type [GET or POST],
     // request headers, request body, etc.).
@@ -37,34 +37,11 @@ public class ClearHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-        // This handler returns a list of "Ticket to Ride" games that
-        // are (fictitiously) currently running in the server.
-        // The game list is returned to the client in JSON format inside
-        // the HTTP response body.
-        // This implementation is clearly unrealistic, because it
-        // always returns the same hard-coded list of games.
-        // It is also unrealistic in that it accepts only one specific
-        // hard-coded auth token.
-        // However, it does demonstrate the following:
-        // 1. How to get the HTTP request type (or, "method")
-        // 2. How to access HTTP request headers
-        // 3. How to return the desired status code (200, 404, etc.)
-        //		in an HTTP response
-        // 4. How to write JSON data to the HTTP response body
-        // 5. How to check an incoming HTTP request for an auth token
-
         try {
-            // Determine the HTTP request type (GET, POST, etc.).
-            // Only allow GET requests for this operation.
-            // This operation requires a GET request, because the
-            // client is "getting" information from the server, and
-            // the operation is "read only" (i.e., does not modify the
-            // state of the server).
-            if (exchange.getRequestMethod().toUpperCase().equals("GET")) {
+            if (exchange.getRequestMethod().toUpperCase().equals("POST")) {
 
                 // Get the HTTP request headers
                 Headers reqHeaders = exchange.getRequestHeaders();
-
                 // Check to see if an "Authorization" header is present
                 if (reqHeaders.containsKey("Authorization")) {
 
@@ -72,42 +49,59 @@ public class ClearHandler implements HttpHandler {
                     String authToken = reqHeaders.getFirst("Authorization");
 
                     // Verify that the auth token is the one we're looking for
-                    // (this is not realistic, because clients will use different
-                    // auth tokens over time, not the same one all the time). A
-                    // realistic example would do a database lookup to confirm that
+                    // A realistic example would do a database lookup to confirm that
                     // the auto token is valid and would retrieve the user data
                     // associated with the auth token.
+
+
+                    final Connection conn = null;
+                    AuthToken token;
+                    ResultSet rs = null;
+                    String sql = "SELECT * FROM AuthToken WHERE token = ?;";
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                        stmt.setString(1, authToken);
+                        rs = stmt.executeQuery();
+                        if (rs.next()) {
+                            token = new AuthToken(rs.getString("token"), rs.getString("username"));
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        throw new IOException("Error encountered while finding event");
+                    } finally {
+                        if(rs != null) {
+                            try {
+                                rs.close();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+
+
+
+
+
                     if (authToken.equals("afj232hj2332")) {
 
-                        // This is the JSON data we will return in the HTTP response body
-                        // (this is unrealistic because it always returns the same answer).
-                        // A realistic example would retrieve game data from the database
-                        // and convert that to Json.
-                        String respData =
-                                "{ \"game-list\": [" +
-                                        "{ \"name\": \"fhe game\", \"player-count\": 3 }," +
-                                        "{ \"name\": \"work game\", \"player-count\": 4 }," +
-                                        "{ \"name\": \"church game\", \"player-count\": 2 }" +
-                                        "]" +
-                                        "}";
+                        // Extract the JSON string from the HTTP request body
+
+                        // Get the request body input stream
+                        InputStream reqBody = exchange.getRequestBody();
+
+                        // Read JSON string from the input stream
+                        String reqData = readString(reqBody);
+
+                        // Display/log the request JSON data
+                        System.out.println(reqData);
+
+
+                        // TODO: Claim a route based on the request data
+
 
                         // Start sending the HTTP response to the client, starting with
                         // the status code and any defined headers.
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-
-
-                        // Now that the status code and headers have been sent to the client,
-                        // next we send the JSON data in the HTTP response body.
-
-                        // Get the response body output stream.
-                        OutputStream respBody = exchange.getResponseBody();
-
-                        // Write the JSON string to the output stream.
-                        writeString(respData, respBody);
-
-                        // Close the output stream.  This is how Java knows we are done
-                        // sending data and the response is complete
-                        respBody.close();
 
                     } else {
                         // The auth token was invalid somehow, so we return a "not authorized"
@@ -120,18 +114,22 @@ public class ClearHandler implements HttpHandler {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
                 }
             } else {
-                // We expected a GET but got something else, so we return a "bad request"
+                // We expected a POST but got something else, so we return a "bad request"
                 // status code to the client.
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
+
+            // We are not sending a response body, so close the response body
+            // output stream, indicating that the response is complete.
+            exchange.getResponseBody().close();
         } catch (IOException e) {
             // Some kind of internal error has occurred inside the server (not the
             // client's fault), so we return an "internal server error" status code
             // to the client.
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
-            // Since the server is unable to complete the request, the client will
-            // not receive the list of games, so we close the response body output stream,
-            // indicating that the response is complete.
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+
+            // We are not sending a response body, so close the response body
+            // output stream, indicating that the response is complete.
             exchange.getResponseBody().close();
 
             // Display/log the stack trace
@@ -140,12 +138,16 @@ public class ClearHandler implements HttpHandler {
     }
 
     /*
-        The writeString method shows how to write a String to an OutputStream.
+        The readString method shows how to read a String from an InputStream.
     */
-    private void writeString(String str, OutputStream os) throws IOException {
-        OutputStreamWriter sw = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(sw);
-        bw.write(str);
-        bw.flush();
+    private String readString(InputStream is) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        InputStreamReader sr = new InputStreamReader(is);
+        char[] buf = new char[1024];
+        int len;
+        while ((len = sr.read(buf)) > 0) {
+            sb.append(buf, 0, len);
+        }
+        return sb.toString();
     }
 }

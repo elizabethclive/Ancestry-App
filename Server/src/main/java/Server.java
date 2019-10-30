@@ -27,6 +27,8 @@ public class Server {
             System.out.println("Error creating the database");
         }
 
+
+
         int portNumber = Integer.parseInt(args[0]);
         startServer(portNumber);
 
@@ -74,6 +76,9 @@ public class Server {
         InetSocketAddress serverAddress = new InetSocketAddress(port);
         HttpServer server = HttpServer.create(serverAddress, 10);
         registerHandlers(server);
+
+        server.setExecutor(null); // not in the slides
+
         server.start();
         System.out.println("FamilyMapServer listening on port " + port);
     }
