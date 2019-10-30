@@ -96,7 +96,7 @@ public class ClearHandler implements HttpHandler {
                         System.out.println(reqData);
 
 
-                        // TODO: Claim a route based on the request data
+                        // TODO: do stuff
 
 
                         // Start sending the HTTP response to the client, starting with
@@ -104,18 +104,12 @@ public class ClearHandler implements HttpHandler {
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
                     } else {
-                        // The auth token was invalid somehow, so we return a "not authorized"
-                        // status code to the client.
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
                     }
                 } else {
-                    // We did not get an auth token, so we return a "not authorized"
-                    // status code to the client.
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
                 }
             } else {
-                // We expected a POST but got something else, so we return a "bad request"
-                // status code to the client.
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
 
@@ -123,9 +117,6 @@ public class ClearHandler implements HttpHandler {
             // output stream, indicating that the response is complete.
             exchange.getResponseBody().close();
         } catch (IOException e) {
-            // Some kind of internal error has occurred inside the server (not the
-            // client's fault), so we return an "internal server error" status code
-            // to the client.
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
 
             // We are not sending a response body, so close the response body
@@ -137,9 +128,6 @@ public class ClearHandler implements HttpHandler {
         }
     }
 
-    /*
-        The readString method shows how to read a String from an InputStream.
-    */
     private String readString(InputStream is) throws IOException {
         StringBuilder sb = new StringBuilder();
         InputStreamReader sr = new InputStreamReader(is);
