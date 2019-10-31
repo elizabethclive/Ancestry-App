@@ -21,12 +21,12 @@ public class PersonDAO {
      * @param person to be put into the database
      */
     public void createPerson(Person person) throws DataAccessException{
-        String sql = "INSERT INTO Person (personID, username, firstName, lastName, gender, " +
-                "fatherID, motherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Person (personID, username, firstName, lastName, gender, fatherID, motherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             //Using the statements built-in set(type) functions we can pick the question mark we want
             //to fill in and give it a proper value. The first argument corresponds to the first
             //question mark found in our sql String
+            System.out.println("here1");
             stmt.setString(1, person.getId());
             stmt.setString(2, person.getUsername());
             stmt.setString(3, person.getFirstName());
@@ -38,6 +38,7 @@ public class PersonDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
+            System.out.println("ERROROROROROROROROR");
             throw new DataAccessException("Error encountered while inserting person into the database");
         }
     };

@@ -13,8 +13,8 @@ public class PersonDAOTest {
     @org.junit.jupiter.api.BeforeEach
     void setUp() throws Exception {
         db = new Database();
-        person = new Person("1", "eclive", "Elizabeth",
-                "Clive", "F", "1", "1", "1");
+        this.person = new Person("asdf", "eclive", "Elizabeth",
+                "Clive", null, null, null, "asdf");
         db.openConnection();
         db.createTables();
         db.closeConnection(true);
@@ -37,6 +37,7 @@ public class PersonDAOTest {
             compareTest = pDao.readPerson(person.getId());
             db.closeConnection(true);
         } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
             try {
                 db.closeConnection(false);
             } catch (Exception exception) {

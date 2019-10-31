@@ -115,8 +115,8 @@ public class Database {
                     "motherID text, " +
                     "spouseID text, " +
                     "primary key (personID), " +
-                    "foreign key (fatherID) references Person(personID)" +
-                    "foreign key (motherID) references Person(personID)" +
+                    "foreign key (fatherID) references Person(personID), " +
+                    "foreign key (motherID) references Person(personID), " +
                     "foreign key (spouseID) references Person(personID)" +
                     ");";
 
