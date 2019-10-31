@@ -2,5 +2,7 @@ package Handler;
 
 import com.sun.net.httpserver.HttpHandler;
 
-public class EventsHandler implements HttpHandler {
+public class EventsHandler extends RequestHandler {
+
+
 }

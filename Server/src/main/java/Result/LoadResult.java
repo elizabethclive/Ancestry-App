@@ -1,17 +1,8 @@
 package Result;
 
-public class LoadResult {
-    private String result;
+public class LoadResult extends Result {
 
-    public LoadResult(String result) {
-        this.result = result;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
+    public LoadResult(boolean success, String message) {
+        super(success, message);
     }
 }

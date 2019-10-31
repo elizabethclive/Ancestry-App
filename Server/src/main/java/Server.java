@@ -17,67 +17,28 @@ import Handler.PersonHandler;
 import Handler.RegisterHandler;
 
 public class Server {
-    public void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         Database db = new Database();
 
         try {
+            db.openConnection();
             db.createTables();
+            db.closeConnection(true);
         } catch (DataAccessException e) {
+            db.closeConnection(false);
             e.printStackTrace();
             System.out.println("Error creating the database");
         }
 
-
-
         int portNumber = Integer.parseInt(args[0]);
-        startServer(portNumber);
+        new Server().startServer(portNumber);
 
-//        ServerSocket serverSocket = null;
-//        Socket clientSocket = null;
-//        try {
-//            serverSocket = new ServerSocket(8000);
-//            clientSocket = serverSocket.accept();
-//        } catch (IOException e) {
-//            System.err.println("Error trying to connect to socket");
-//            System.exit(1);
-//        }
-//
-//
-//        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-//        BufferedReader in = new BufferedReader(
-//                new InputStreamReader(
-//                        clientSocket.getInputStream()));
-//
-//
-//
-//        ClearHandler.handle();
-//
-//
-//
-//        String inputLine, outputLine;
-//        KnockKnockProtocol kkp = new KnockKnockProtocol();
-//
-//        outputLine = kkp.processInput(null);
-//        out.println(outputLine);
-//
-//        while ((inputLine = in.readLine()) != null) {
-//            outputLine = kkp.processInput(inputLine);
-//            out.println(outputLine);
-//            if (outputLine.equals("Bye."))
-//                break;
-//        }
-//        out.close();
-//        in.close();
-//        clientSocket.close();
-//        serverSocket.close();
     }
 
     private void startServer(int port) throws IOException {
         InetSocketAddress serverAddress = new InetSocketAddress(port);
         HttpServer server = HttpServer.create(serverAddress, 10);
         registerHandlers(server);
-
-        server.setExecutor(null); // not in the slides
 
         server.start();
         System.out.println("FamilyMapServer listening on port " + port);

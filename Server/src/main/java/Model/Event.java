@@ -1,8 +1,8 @@
 package Model;
 
 public class Event {
-    private String id;
-    private String username;
+    private String eventID;
+    private String associatedUsername;
     private String personID;
     private float latitude;
     private float longitude;
@@ -11,9 +11,9 @@ public class Event {
     private String eventType;
     private int year;
 
-    public Event(String id, String username, String personID, float latitude, float longitude, String country, String city, String eventType, int year) {
-        this.id = id;
-        this.username = username;
+    public Event(String eventID, String associatedUsername, String personID, float latitude, float longitude, String country, String city, String eventType, int year) {
+        this.eventID = eventID;
+        this.associatedUsername = associatedUsername;
         this.personID = personID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -24,19 +24,19 @@ public class Event {
     }
 
     public String getId() {
-        return id;
+        return eventID;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.eventID = id;
     }
 
     public String getUsername() {
-        return username;
+        return associatedUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String associatedUsername) {
+        this.associatedUsername = associatedUsername;
     }
 
     public String getPersonID() {

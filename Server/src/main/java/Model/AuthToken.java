@@ -3,9 +3,12 @@ package Model;
 public class AuthToken {
     private String token;
     private String username;
+    private String personID;
 
-    public AuthToken(String token) {
+    public AuthToken(String token, String username, String personID) {
         this.token = token;
+        this.username = username;
+        this.personID = personID;
     }
 
     public String getToken() {
@@ -22,5 +25,13 @@ public class AuthToken {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(String personID) {
+        this.personID = personID;
     }
 }

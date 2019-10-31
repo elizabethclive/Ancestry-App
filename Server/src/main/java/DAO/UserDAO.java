@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import Model.User;
 
@@ -31,11 +32,11 @@ public class UserDAO {
             stmt.setString(4, user.getFirstName());
             stmt.setString(5, user.getLastName());
             stmt.setString(6, user.getGender());
-            stmt.setInt(7, user.getPersonID());
+            stmt.setString(7, user.getPersonID());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Error encountered while inserting into the database");
+            throw new DataAccessException("Error encountered while inserting user into the database");
         }
     };
 
@@ -54,7 +55,7 @@ public class UserDAO {
             if (rs.next()) {
                 user = new User(rs.getString("username"), rs.getString("password"),
                         rs.getString("email"), rs.getString("firstName"), rs.getString("lastName"),
-                        rs.getString("gender"), rs.getInt("personID"));
+                        rs.getString("gender"), rs.getString("personID"));
                 return user;
             } else {
                 System.out.println();
@@ -93,4 +94,16 @@ public class UserDAO {
             System.out.println(e);
         }
     };
+
+    /**
+     * Clears all users in the database
+     */
+    public void clear() throws DataAccessException {
+        try (Statement stmt = conn.createStatement()){
+            String sql = "DELETE FROM User;";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new DataAccessException("SQL Error encountered while clearing user table");
+        }
+    }
 }

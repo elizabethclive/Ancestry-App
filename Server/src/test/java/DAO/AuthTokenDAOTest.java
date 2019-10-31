@@ -2,19 +2,19 @@ package DAO;
 
 import java.sql.Connection;
 
-import Model.User;
+import Model.AuthToken;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserDAOTest {
+class AuthTokenDAOTest {
+
     private Database db;
-    private User user;
+    private AuthToken event;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() throws Exception {
         db = new Database();
-        user = new User("eclive", "password", "eclive@gmail.com",
-                "Elizabeth", "Clive", "F", "1");
+        event = new AuthToken("Biking_123A", "Gale", "hello");
         db.openConnection();
         db.createTables();
         db.closeConnection(true);
@@ -28,13 +28,13 @@ public class UserDAOTest {
     }
 
     @org.junit.jupiter.api.Test
-    void createUserPass() {
-        User compareTest = null;
+    void createTokenPass() {
+        AuthToken compareTest = null;
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            uDao.createUser(user);
-            compareTest = uDao.readUser(user.getUsername());
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            eDao.createToken(event);
+            compareTest = eDao.readToken(event.getToken());
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -44,17 +44,17 @@ public class UserDAOTest {
             }
         }
         assertNotNull(compareTest);
-        assertEquals(user.getUsername(), compareTest.getUsername());
+        assertEquals(event.getToken(), compareTest.getToken());
     }
 
     @org.junit.jupiter.api.Test
-    void createUserFail() {
+    void createTokenFail() {
         boolean didItWork = true;
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            uDao.createUser(user);
-            uDao.createUser(user);
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            eDao.createToken(event);
+            eDao.createToken(event);
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -66,11 +66,11 @@ public class UserDAOTest {
         }
         assertFalse(didItWork);
 
-        User compareTest = user;
+        AuthToken compareTest = event;
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            compareTest = uDao.readUser(user.getUsername());
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            compareTest = eDao.readToken(event.getToken());
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -84,14 +84,14 @@ public class UserDAOTest {
     }
 
     @org.junit.jupiter.api.Test
-    void readUserPass() {
-        User compareTest = null;
+    void readTokenPass() {
+        AuthToken compareTest = null;
 
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            uDao.createUser(user);
-            compareTest = uDao.readUser(user.getUsername());
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            eDao.createToken(event);
+            compareTest = eDao.readToken(event.getToken());
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -102,18 +102,18 @@ public class UserDAOTest {
         }
 
         assertNotNull(compareTest);
-        assertEquals(compareTest.getUsername(), user.getUsername());
+        assertEquals(compareTest.getToken(), event.getToken());
     }
 
     @org.junit.jupiter.api.Test
-    void readUserFail() {
-        User compareTest = null;
+    void readTokenFail() {
+        AuthToken compareTest = null;
 
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            uDao.createUser(user);
-            compareTest = uDao.readUser("BAD USERNAME");
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            eDao.createToken(event);
+            compareTest = eDao.readToken("BAD USERNAME");
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -127,13 +127,13 @@ public class UserDAOTest {
     }
 
     @org.junit.jupiter.api.Test
-    void deleteUserPass() {
-        User compareTest = null;
+    void deleteTokenPass() {
+        AuthToken compareTest = null;
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            uDao.createUser(user);
-            compareTest = uDao.readUser(user.getUsername());
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            eDao.createToken(event);
+            compareTest = eDao.readToken(event.getToken());
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -143,13 +143,13 @@ public class UserDAOTest {
             }
         }
         assertNotNull(compareTest);
-        assertEquals(user.getUsername(), compareTest.getUsername());
+        assertEquals(event.getToken(), compareTest.getToken());
 
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            uDao.deleteUser(user.getUsername());
-            compareTest = uDao.readUser(user.getUsername());
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            eDao.deleteToken(event.getToken());
+            compareTest = eDao.readToken(event.getToken());
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -163,15 +163,15 @@ public class UserDAOTest {
     }
 
     @org.junit.jupiter.api.Test
-    void deleteUserFail() {
+    void deleteTokenFail() {
         boolean didItWork = true;
         final Connection conn1 = null;
 
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            uDao.deleteUser("1");
-//            compareTest = uDao.readUser(user.getUsername());
+            AuthTokenDAO eDao = new AuthTokenDAO(conn);
+            eDao.deleteToken("1");
+//            compareTest = eDao.readToken()(event.getToken()());
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -183,4 +183,5 @@ public class UserDAOTest {
         }
         assertTrue(didItWork);
     }
+
 }

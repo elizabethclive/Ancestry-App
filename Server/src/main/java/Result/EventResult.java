@@ -11,6 +11,12 @@ public class EventResult {
     private String eventType;
     private int year;
 
+    private String message;
+
+    public EventResult(String message) {
+        this.message = message;
+    }
+
     public EventResult(String associatedUsername, int eventID, int personID, float latitude, float longitude, String country, String city, String eventType, int year) {
         this.associatedUsername = associatedUsername;
         this.eventID = eventID;

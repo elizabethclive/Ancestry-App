@@ -73,18 +73,18 @@ public class Database {
             //Format this string to be exactly like a sql create table command
             String sql = "CREATE TABLE IF NOT EXISTS Event " +
                     "(" +
-                    "EventID text not null unique, " +
-                    "AssociatedUsername text not null, " +
-                    "PersonID text not null, " +
-                    "Latitude float not null, " +
-                    "Longitude float not null, " +
-                    "Country text not null, " +
-                    "City text not null, " +
-                    "EventType text not null, " +
-                    "Year int not null, " +
-                    "primary key (EventID), " +
-                    "foreign key (AssociatedUsername) references User(Username), " +
-                    "foreign key (PersonID) references Person(PersonID)" +
+                    "eventID text not null unique, " +
+                    "associatedUsername text not null, " +
+                    "personID text not null, " +
+                    "latitude float not null, " +
+                    "longitude float not null, " +
+                    "country text not null, " +
+                    "city text not null, " +
+                    "eventType text not null, " +
+                    "year int not null, " +
+                    "primary key (eventID), " +
+                    "foreign key (associatedUsername) references User(username), " +
+                    "foreign key (personID) references Person(personID)" +
                     ");" +
                     "CREATE TABLE IF NOT EXISTS User " +
                     "(" +
@@ -94,9 +94,9 @@ public class Database {
                     "firstName text not null, " +
                     "lastName text not null, " +
                     "gender text not null, " +
-                    "personID int not null, " +
+                    "personID text not null, " +
                     "primary key (username), " +
-                    "foreign key (PersonID) references Person(PersonID)" +
+                    "foreign key (personID) references Person(personID)" +
                     ");" +
                     "CREATE TABLE IF NOT EXISTS AuthToken " +
                     "(" +
@@ -106,18 +106,18 @@ public class Database {
                     ");" +
                     "CREATE TABLE IF NOT EXISTS Person " +
                     "(" +
-                    "id text not null unique, " +
+                    "personID text not null unique, " +
                     "username text not null, " +
                     "firstName text not null, " +
                     "lastName text not null, " +
                     "gender text not null, " +
-                    "fatherID int not null, " +
-                    "motherID int not null, " +
-                    "spouseID int not null, " +
-                    "primary key (id), " +
-                    "foreign key (fatherID) references Person(PersonID)" +
-                    "foreign key (motherID) references Person(PersonID)" +
-                    "foreign key (spouseID) references Person(PersonID)" +
+                    "fatherID text, " +
+                    "motherID text, " +
+                    "spouseID text, " +
+                    "primary key (personID), " +
+                    "foreign key (fatherID) references Person(personID)" +
+                    "foreign key (motherID) references Person(personID)" +
+                    "foreign key (spouseID) references Person(personID)" +
                     ");";
 
             stmt.executeUpdate(sql);
@@ -132,9 +132,8 @@ public class Database {
 
     public void clearTables() throws DataAccessException
     {
-
         try (Statement stmt = conn.createStatement()){
-            String sql = "DELETE FROM Event; DELETE FROM Person; DELETE FROM User;";
+            String sql = "DELETE FROM Event; DELETE FROM Person; DELETE FROM User; DELETE FROM AuthToken;";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             throw new DataAccessException("SQL Error encountered while clearing tables");

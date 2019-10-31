@@ -14,7 +14,7 @@ public class PersonDAOTest {
     void setUp() throws Exception {
         db = new Database();
         person = new Person("1", "eclive", "Elizabeth",
-                "Clive", "F", 1, 1, 1);
+                "Clive", "F", "1", "1", "1");
         db.openConnection();
         db.createTables();
         db.closeConnection(true);

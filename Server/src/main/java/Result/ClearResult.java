@@ -1,17 +1,8 @@
 package Result;
 
-public class ClearResult {
-    private String result;
+public class ClearResult extends Result {
 
-    public ClearResult(String result) {
-        this.result = result;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
+    public ClearResult(boolean success, String message) {
+        super(success, message);
     }
 }

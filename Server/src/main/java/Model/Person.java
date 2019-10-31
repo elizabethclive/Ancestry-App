@@ -1,18 +1,18 @@
 package Model;
 
 public class Person {
-    private String id;
-    private String username;
+    private String personID;
+    private String associatedUsername;
     private String firstName;
     private String lastName;
     private String gender;
-    private int fatherID;
-    private int motherID;
-    private int spouseID;
+    private String fatherID;
+    private String motherID;
+    private String spouseID;
 
-    public Person(String id, String username, String firstName, String lastName, String gender, int fatherID, int motherID, int spouseID) {
-        this.id = id;
-        this.username = username;
+    public Person(String firstName, String lastName, String gender, String personID, String fatherID, String motherID, String spouseID, String associatedUsername) {
+        this.personID = personID;
+        this.associatedUsername = associatedUsername;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -22,19 +22,19 @@ public class Person {
     }
 
     public String getId() {
-        return id;
+        return personID;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.personID = id;
     }
 
     public String getUsername() {
-        return username;
+        return associatedUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String associatedUsername) {
+        this.associatedUsername = associatedUsername;
     }
 
     public String getFirstName() {
@@ -61,27 +61,27 @@ public class Person {
         this.gender = gender;
     }
 
-    public int getFatherID() {
+    public String getFatherID() {
         return fatherID;
     }
 
-    public void setFatherID(int fatherID) {
+    public void setFatherID(String fatherID) {
         this.fatherID = fatherID;
     }
 
-    public int getMotherID() {
+    public String getMotherID() {
         return motherID;
     }
 
-    public void setMotherID(int motherID) {
+    public void setMotherID(String motherID) {
         this.motherID = motherID;
     }
 
-    public int getSpouseID() {
+    public String getSpouseID() {
         return spouseID;
     }
 
-    public void setSpouseID(int spouseID) {
+    public void setSpouseID(String spouseID) {
         this.spouseID = spouseID;
     }
 }

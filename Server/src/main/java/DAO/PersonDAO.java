@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import Model.Person;
 
@@ -20,7 +21,7 @@ public class PersonDAO {
      * @param person to be put into the database
      */
     public void createPerson(Person person) throws DataAccessException{
-        String sql = "INSERT INTO Person (id, username, firstName, lastName, gender, " +
+        String sql = "INSERT INTO Person (personID, username, firstName, lastName, gender, " +
                 "fatherID, motherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             //Using the statements built-in set(type) functions we can pick the question mark we want
@@ -31,13 +32,13 @@ public class PersonDAO {
             stmt.setString(3, person.getFirstName());
             stmt.setString(4, person.getLastName());
             stmt.setString(5, person.getGender());
-            stmt.setInt(6, person.getFatherID());
-            stmt.setInt(7, person.getMotherID());
-            stmt.setInt(8, person.getSpouseID());
+            stmt.setString(6, person.getFatherID());
+            stmt.setString(7, person.getMotherID());
+            stmt.setString(8, person.getSpouseID());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("Error encountered while inserting into the database");
+            throw new DataAccessException("Error encountered while inserting person into the database");
         }
     };
 
@@ -55,7 +56,7 @@ public class PersonDAO {
             rs = stmt.executeQuery();
             if (rs.next()) {
                 person = new Person(rs.getString("id"), rs.getString("username"), rs.getString("firstName"), rs.getString("lastName"),
-                        rs.getString("gender"), rs.getInt("fatherID"), rs.getInt("motherID"), rs.getInt("spouseID"));
+                        rs.getString("gender"), rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"));
                 return person;
             }
         } catch (SQLException e) {
@@ -91,4 +92,17 @@ public class PersonDAO {
             System.out.println(e);
         }
     };
+
+
+    /**
+     * Clears all people in the database
+     */
+    public void clear() throws DataAccessException {
+        try (Statement stmt = conn.createStatement()){
+            String sql = "DELETE FROM Person;";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new DataAccessException("SQL Error encountered while clearing person table");
+        }
+    }
 }
