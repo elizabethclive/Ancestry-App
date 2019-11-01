@@ -1,10 +1,12 @@
 package DAO;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import Model.Event;
 
@@ -72,7 +74,7 @@ public class EventDAO {
 
         }
         return null;
-    };
+    }
 
     /**
      * Finds the event in the database with the event id and deletes it
@@ -85,14 +87,44 @@ public class EventDAO {
                 stmt.setString(1, eventID);
                 stmt.executeUpdate();
             } catch (SQLException e) {
-                System.out.println("eRROEJROEJROEJFOEI JOFIJE");
                 throw new DataAccessException("Error encountered while deleting from the database");
             }
 
         } catch (DataAccessException e) {
             System.out.println(e);
         }
-    };
+    }
+
+    public ArrayList<Event> getAssociatedEvents(String associatedUsername) throws DataAccessException {
+        Event event;
+        ArrayList<Event> events = new ArrayList<>();
+        ResultSet rs = null;
+        String sql = "SELECT * FROM Event WHERE associatedUsername = ?;";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, associatedUsername);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                event = new Event(rs.getString("EventID"), rs.getString("AssociatedUsername"),
+                        rs.getString("PersonID"), rs.getFloat("Latitude"), rs.getFloat("Longitude"),
+                        rs.getString("Country"), rs.getString("City"), rs.getString("EventType"),
+                        rs.getInt("Year"));
+                events.add(event);
+            }
+            return events;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error encountered while finding events");
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
 
     /**
      * Clears all events in the database

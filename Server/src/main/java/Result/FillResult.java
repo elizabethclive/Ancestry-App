@@ -1,17 +1,8 @@
 package Result;
 
-public class FillResult {
-    private String result;
+public class FillResult extends Result {
 
-    public FillResult(String result) {
-        this.result = result;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
+    public FillResult(boolean success, String message) {
+        super(success, message);
     }
 }

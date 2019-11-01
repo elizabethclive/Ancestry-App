@@ -2,6 +2,7 @@ package Service;
 
 import java.sql.Connection;
 
+import DAO.AuthTokenDAO;
 import DAO.DataAccessException;
 import DAO.Database;
 import DAO.UserDAO;
@@ -21,28 +22,31 @@ public class LoginService {
         Database db = new Database();
 
         try {
-            Connection conn = db.getConnection();
-            db.clearTables();
+            Connection conn = db.openConnection();
+//            db.clearTables();
 
-            String username = request.getUsername();
+            String userName = request.getUsername();
             String password = request.getPassword();
 
             UserDAO uDao = new UserDAO(conn);
 
-            User user = uDao.readUser(username);
+            User user = uDao.readUser(userName);
             if (user != null) {
                 if (user.getPassword().equals(password)) {
                     String authTokenString = RandomString.getRandomString();
-                    AuthToken token = new AuthToken(authTokenString, username, user.getPersonID());
-                    String serializedToken = JsonHandler.serialize(token);
+                    AuthToken authToken = new AuthToken(authTokenString, userName, user.getPersonID());
+                    AuthTokenDAO aDao = new AuthTokenDAO(conn);
+                    aDao.createToken(authToken);
+                    String serializedToken = JsonHandler.serialize(authToken);
                     db.closeConnection(true);
                     return new LoginResult(true, serializedToken);
                 } else {
                     db.closeConnection(false);
-                    return new LoginResult(false, "Password was incorrect");
+                    return new LoginResult(false, "Error: Password is incorrect");
                 }
             } else {
-                return new LoginResult(false,"User not found.");
+                db.closeConnection(false);
+                return new LoginResult(false,"Error: User not found.");
             }
         } catch (DataAccessException e) {
             db.closeConnection(false);

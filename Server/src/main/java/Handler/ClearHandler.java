@@ -37,17 +37,17 @@ public class ClearHandler extends RequestHandler {
                 ClearResult result = clearService.clear();
 
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                System.out.println(result.getResult());
                 OutputStream respBody = exchange.getResponseBody();
+
                 writeString(JsonHandler.serialize(result), respBody);
                 respBody.close();
 
             } else {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             }
             exchange.getResponseBody().close();
         } catch (DataAccessException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.getResponseBody().close();
             e.printStackTrace();
         }

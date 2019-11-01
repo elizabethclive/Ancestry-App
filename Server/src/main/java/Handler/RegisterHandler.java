@@ -8,8 +8,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 import Model.AuthToken;
+import Request.FillRequest;
 import Request.RegisterRequest;
 import Result.RegisterResult;
+import Service.FillService;
 import Service.RegisterService;
 
 public class RegisterHandler extends RequestHandler {
@@ -26,21 +28,31 @@ public class RegisterHandler extends RequestHandler {
                 RegisterService registerService = new RegisterService();
                 RegisterResult registerResult = registerService.register(registerRequest);
                 if (registerResult.isSuccess()) {
+                    FillRequest fillRequest = new FillRequest(registerRequest.getUsername(), 4);
+                    FillService fillService = new FillService();
+                    fillService.fill(fillRequest);
+
+                    System.out.println("register result is a success");
                     AuthToken token = JsonHandler.deserialize(registerResult.getResult(), AuthToken.class);
                     String deserializedResult = token.getToken();
                     exchange.getResponseHeaders().set("Authorization", deserializedResult);
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 } else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+                    System.out.println("Register result is not a success");
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 }
                 OutputStream respBody = exchange.getResponseBody();
-                writeString(registerResult.getResult(), respBody);
+                if (registerResult.isSuccess()) {
+                    writeString(registerResult.getResult(), respBody);
+                } else {
+                    writeString(JsonHandler.serialize(registerResult), respBody);
+                }
                 respBody.close();
             } else {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             }
         } catch (Exception e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.getResponseBody().close();
             e.printStackTrace();
         }

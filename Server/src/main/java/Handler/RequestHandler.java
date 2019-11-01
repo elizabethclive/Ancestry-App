@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 public class RequestHandler implements HttpHandler {
 
     public void writeString(String str, OutputStream os) throws IOException {
+        System.out.println(str);
         OutputStreamWriter sw = new OutputStreamWriter(os);
         BufferedWriter bw = new BufferedWriter(sw);
         bw.write(str);

@@ -83,31 +83,34 @@ public class Database {
                     "eventType text not null, " +
                     "year int not null, " +
                     "primary key (eventID), " +
-                    "foreign key (associatedUsername) references User(username), " +
+                    "foreign key (associatedUsername) references User(userName), " +
                     "foreign key (personID) references Person(personID)" +
                     ");" +
+//                    "DROP TABLE User; " +
                     "CREATE TABLE IF NOT EXISTS User " +
                     "(" +
-                    "username text not null unique, " +
+                    "userName text not null unique, " +
                     "password text not null, " +
                     "email text not null, " +
                     "firstName text not null, " +
                     "lastName text not null, " +
                     "gender text not null, " +
                     "personID text not null, " +
-                    "primary key (username), " +
+                    "primary key (userName), " +
                     "foreign key (personID) references Person(personID)" +
                     ");" +
                     "CREATE TABLE IF NOT EXISTS AuthToken " +
                     "(" +
-                    "token text not null unique, " +
-                    "username text not null, " +
-                    "foreign key (username) references User(username)" +
+                    "authToken text not null unique, " +
+                    "userName text not null, " +
+                    "personID text not null, " +
+                    "foreign key (userName) references User(userName)" +
+                    "foreign key (personID) references Person(personID)" +
                     ");" +
                     "CREATE TABLE IF NOT EXISTS Person " +
                     "(" +
                     "personID text not null unique, " +
-                    "username text not null, " +
+                    "userName text not null, " +
                     "firstName text not null, " +
                     "lastName text not null, " +
                     "gender text not null, " +
@@ -136,7 +139,7 @@ public class Database {
             String sql = "DELETE FROM Event; DELETE FROM Person; DELETE FROM User; DELETE FROM AuthToken;";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
-            throw new DataAccessException("SQL Error encountered while clearing tables");
+            throw new DataAccessException("SQL Error encountered while clearing all tables");
         }
     }
 }

@@ -10,7 +10,7 @@ public class Person {
     private String motherID;
     private String spouseID;
 
-    public Person(String firstName, String lastName, String gender, String personID, String fatherID, String motherID, String spouseID, String associatedUsername) {
+    public Person(String personID, String firstName, String lastName, String gender, String fatherID, String motherID, String spouseID, String associatedUsername) {
         this.personID = personID;
         this.associatedUsername = associatedUsername;
         this.firstName = firstName;

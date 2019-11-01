@@ -1,30 +1,30 @@
 package Model;
 
 public class AuthToken {
-    private String token;
-    private String username;
+    private String authToken;
+    private String userName;
     private String personID;
 
-    public AuthToken(String token, String username, String personID) {
-        this.token = token;
-        this.username = username;
+    public AuthToken(String authToken, String userName, String personID) {
+        this.authToken = authToken;
+        this.userName = userName;
         this.personID = personID;
     }
 
     public String getToken() {
-        return token;
+        return authToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setToken(String authToken) {
+        this.authToken = authToken;
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String userName) {
+        this.userName = userName;
     }
 
     public String getPersonID() {

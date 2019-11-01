@@ -20,7 +20,6 @@ public class LoginHandler extends RequestHandler {
             if (exchange.getRequestMethod().toUpperCase().equals("POST")) {
                 InputStream reqBody = exchange.getRequestBody();
                 String reqData = readString(reqBody);
-
                 LoginRequest loginRequest = JsonHandler.deserialize(reqData, LoginRequest.class);
                 reqBody.close();
                 LoginService loginService = new LoginService();
@@ -29,13 +28,17 @@ public class LoginHandler extends RequestHandler {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
                 OutputStream respBody = exchange.getResponseBody();
-                writeString(JsonHandler.serialize(loginResult), respBody);
+                if (loginResult.isSuccess()) {
+                    writeString(loginResult.getResult(), respBody);
+                } else {
+                    writeString(JsonHandler.serialize(loginResult), respBody);
+                }
                 respBody.close();
             } else {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             }
         } catch (Exception e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.getResponseBody().close();
             e.printStackTrace();
         }

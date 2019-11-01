@@ -2,12 +2,14 @@ package Service;
 
 import java.sql.Connection;
 
+import DAO.AuthTokenDAO;
 import DAO.DataAccessException;
 import DAO.Database;
 import DAO.UserDAO;
 import Handler.JsonHandler;
 import Model.AuthToken;
 import Model.User;
+import Request.FillRequest;
 import Request.RegisterRequest;
 import Result.RegisterResult;
 
@@ -21,25 +23,30 @@ public class RegisterService {
         Database db = new Database();
 
         try {
-            Connection conn = db.getConnection();
-            db.clearTables(); //FIXME
-
-            String username = request.getUsername();
+            Connection conn = db.openConnection();
+//            db.clearTables(); //FIXME
+            String userName = request.getUsername();
             String personID = request.getPersonID();
             if (personID == null) {
                 personID = RandomString.getRandomString();
             }
-
+            System.out.println("before read user");
             UserDAO uDao = new UserDAO(conn);
-            User user = new User(request.getUsername(), request.getPassword(), request.getEmail(),
+            User user = uDao.readUser(userName);
+            if (user != null) {
+                db.closeConnection(false);
+                return new RegisterResult(false, "Error: This user already exists.");
+            }
+            System.out.println("before create user");
+            user = new User(request.getUsername(), request.getPassword(), request.getEmail(),
                     request.getFirstName(), request.getLastName(), request.getGender(), personID);
             uDao.createUser(user);
 
-            // TODO: create 4 generations of ancestor data
-
             String authTokenString = RandomString.getRandomString();
-            AuthToken token = new AuthToken(authTokenString, username, user.getPersonID());
-            String serializedToken = JsonHandler.serialize(token);
+            AuthToken authToken = new AuthToken(authTokenString, userName, user.getPersonID());
+            AuthTokenDAO aDao = new AuthTokenDAO(conn);
+            aDao.createToken(authToken);
+            String serializedToken = JsonHandler.serialize(authToken);
             db.closeConnection(true);
             return new RegisterResult(true, serializedToken);
 
@@ -47,5 +54,5 @@ public class RegisterService {
             db.closeConnection(false);
             return new RegisterResult(false, e.getMessage());
         }
-    };
+    }
 }

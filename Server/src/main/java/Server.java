@@ -13,7 +13,6 @@ import Handler.FillHandler;
 import Handler.LoadHandler;
 import Handler.LoginHandler;
 import Handler.PersonHandler;
-//import Handler.PersonsHandler;
 import Handler.RegisterHandler;
 
 public class Server {

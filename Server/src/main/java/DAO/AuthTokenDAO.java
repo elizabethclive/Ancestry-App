@@ -18,16 +18,17 @@ public class AuthTokenDAO {
 
     /**
      * Takes a token from AuthToken and puts it into the database
-     * @param token to be created.
+     * @param authToken to be created.
      */
-    public void createToken(AuthToken token) throws DataAccessException {
-        String sql = "INSERT INTO AuthToken (token, username) VALUES(?,?)";
+    public void createToken(AuthToken authToken) throws DataAccessException {
+        String sql = "INSERT INTO AuthToken (authToken, userName, personID) VALUES(?,?,?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             //Using the statements built-in set(type) functions we can pick the question mark we want
             //to fill in and give it a proper value. The first argument corresponds to the first
             //question mark found in our sql String
-            stmt.setString(1, token.getToken());
-            stmt.setString(2, token.getUsername());
+            stmt.setString(1, authToken.getToken());
+            stmt.setString(2, authToken.getUsername());
+            stmt.setString(3, authToken.getPersonID());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -41,15 +42,15 @@ public class AuthTokenDAO {
      * @return token with the ID tokenID
      */
     public AuthToken readToken(String tokenID) throws DataAccessException {
-        AuthToken token;
+        AuthToken authToken;
         ResultSet rs = null;
-        String sql = "SELECT * FROM AuthToken WHERE token = ?;";
+        String sql = "SELECT * FROM AuthToken WHERE authToken = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, tokenID);
             rs = stmt.executeQuery();
             if (rs.next()) {
-                token = new AuthToken(rs.getString("token"), rs.getString("username"), rs.getString("personID"));
-                return token;
+                authToken = new AuthToken(rs.getString("authToken"), rs.getString("userName"), rs.getString("personID"));
+                return authToken;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,7 +73,7 @@ public class AuthTokenDAO {
      */
     public void deleteToken(String tokenID) {
         try {
-            String sql = "DELETE FROM AuthToken WHERE token = ?;";
+            String sql = "DELETE FROM AuthToken WHERE authToken = ?;";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, tokenID);
                 stmt.executeUpdate();

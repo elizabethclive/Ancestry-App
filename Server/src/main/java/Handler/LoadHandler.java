@@ -33,10 +33,10 @@ public class LoadHandler extends RequestHandler {
                 writeString(JsonHandler.serialize(loadResult), respBody);
                 respBody.close();
             } else {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             }
         } catch (DataAccessException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.getResponseBody().close();
             e.printStackTrace();
         }

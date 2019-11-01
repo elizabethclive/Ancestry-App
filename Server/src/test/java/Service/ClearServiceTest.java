@@ -1,9 +1,5 @@
 package Service;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.sql.Connection;
 
 import DAO.DataAccessException;
@@ -11,7 +7,6 @@ import DAO.Database;
 import DAO.EventDAO;
 import DAO.PersonDAO;
 import DAO.UserDAO;
-import Handler.ClearHandler;
 import Model.Event;
 import Model.Person;
 import Model.User;
@@ -19,10 +14,10 @@ import Model.User;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClearServiceTest {
-
     private Database db;
     private User user;
     private Event event;
+    private Event event2;
     private Person person;
 
     @org.junit.jupiter.api.BeforeEach
@@ -32,7 +27,9 @@ class ClearServiceTest {
                 "Elizabeth", "Clive", "F", "1");
         event = new Event("id", "username", "personID", 10.3f,
                            234.45f, "country", "city", "eventType", 1962);
-        person = new Person("firstname", "lastname", "gender", "personID124678",
+        event2 = new Event("id2", "username2", "personID2", 10.32f,
+                234.452f, "country2", "city2", "eventType2", 19622);
+        person = new Person("personID", "firstname", "lastname", "gender",
                              "fatherID", "motherID", "spouseID", "username");
         db.openConnection();
         db.createTables();
@@ -102,29 +99,23 @@ class ClearServiceTest {
     }
 
     @org.junit.jupiter.api.Test
-    void clearServiceFail() {
-        boolean didItWork = true;
+    void clearServicePass2() {
+        ClearService clearService = new ClearService();
+        User compareUser = null;
+        Event compareEvent = null;
+        Event compareEvent2 = null;
         try {
             Connection conn = db.openConnection();
             UserDAO uDao = new UserDAO(conn);
             uDao.createUser(user);
-            uDao.createUser(user);
-            db.closeConnection(true);
-        } catch (DataAccessException e) {
-            try {
-                db.closeConnection(false);
-            } catch (Exception exception) {
-                System.out.println("error");
-            }
-            didItWork = false;
-        }
-        assertFalse(didItWork);
+            compareUser = uDao.readUser(user.getUsername());
 
-        User compareTest = user;
-        try {
-            Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            compareTest = uDao.readUser(user.getUsername());
+            EventDAO eDao = new EventDAO(conn);
+            eDao.createEvent(event);
+            eDao.createEvent(event2);
+            compareEvent = eDao.readEvent(event.getId());
+            compareEvent2 = eDao.readEvent(event2.getId());
+
             db.closeConnection(true);
         } catch (DataAccessException e) {
             try {
@@ -133,108 +124,30 @@ class ClearServiceTest {
                 System.out.println("error");
             }
         }
+        assertNotNull(compareUser);
+        assertNotNull(compareEvent);
+        assertNotNull(compareEvent2);
 
-        assertNull(compareTest);
+        try {
+            clearService.clear();
+            Connection conn = db.openConnection();
+            UserDAO uDao = new UserDAO(conn);
+            EventDAO eDao = new EventDAO(conn);
+            compareUser = uDao.readUser(user.getUsername());
+            compareEvent = eDao.readEvent(event.getId());
+            compareEvent2 = eDao.readEvent(event2.getId());
+
+            db.closeConnection(true);
+        } catch (DataAccessException e) {
+            try {
+                db.closeConnection(false);
+            } catch (Exception exception) {
+                System.out.println("error");
+            }
+        }
+
+        assertNull(compareUser);
+        assertNull(compareEvent);
+        assertNull(compareEvent2);
     }
-
-//    @org.junit.jupiter.api.Test
-//    void readUserPass() {
-//        User compareTest = null;
-//
-//        try {
-//            Connection conn = db.openConnection();
-//            UserDAO uDao = new UserDAO(conn);
-//            uDao.createUser(user);
-//            compareTest = uDao.readUser(user.getUsername());
-//            db.closeConnection(true);
-//        } catch (DataAccessException e) {
-//            try {
-//                db.closeConnection(false);
-//            } catch (Exception exception) {
-//                System.out.println("error");
-//            }
-//        }
-//
-//        assertNotNull(compareTest);
-//        assertEquals(compareTest.getUsername(), user.getUsername());
-//    }
-//
-//    @org.junit.jupiter.api.Test
-//    void readUserFail() {
-//        User compareTest = null;
-//
-//        try {
-//            Connection conn = db.openConnection();
-//            UserDAO uDao = new UserDAO(conn);
-//            uDao.createUser(user);
-//            compareTest = uDao.readUser("BAD USERNAME");
-//            db.closeConnection(true);
-//        } catch (DataAccessException e) {
-//            try {
-//                db.closeConnection(false);
-//            } catch (Exception exception) {
-//                System.out.println("error");
-//            }
-//        }
-//
-//        assertNull(compareTest);
-//    }
-//
-//    @org.junit.jupiter.api.Test
-//    void deleteUserPass() {
-//        User compareTest = null;
-//        try {
-//            Connection conn = db.openConnection();
-//            UserDAO uDao = new UserDAO(conn);
-//            uDao.createUser(user);
-//            compareTest = uDao.readUser(user.getUsername());
-//            db.closeConnection(true);
-//        } catch (DataAccessException e) {
-//            try {
-//                db.closeConnection(false);
-//            } catch (Exception exception) {
-//                System.out.println("error");
-//            }
-//        }
-//        assertNotNull(compareTest);
-//        assertEquals(user.getUsername(), compareTest.getUsername());
-//
-//        try {
-//            Connection conn = db.openConnection();
-//            UserDAO uDao = new UserDAO(conn);
-//            uDao.deleteUser(user.getUsername());
-//            compareTest = uDao.readUser(user.getUsername());
-//            db.closeConnection(true);
-//        } catch (DataAccessException e) {
-//            try {
-//                db.closeConnection(false);
-//            } catch (Exception exception) {
-//                System.out.println("error");
-//            }
-//        }
-//
-//        assertNull(compareTest);
-//    }
-//
-//    @org.junit.jupiter.api.Test
-//    void deleteUserFail() {
-//        boolean didItWork = true;
-//        final Connection conn1 = null;
-//
-//        try {
-//            Connection conn = db.openConnection();
-//            UserDAO uDao = new UserDAO(conn);
-//            uDao.deleteUser("1");
-////            compareTest = uDao.readUser(user.getUsername());
-//            db.closeConnection(true);
-//        } catch (DataAccessException e) {
-//            try {
-//                db.closeConnection(false);
-//            } catch (Exception exception) {
-//                System.out.println("error");
-//            }
-//            didItWork = false;
-//        }
-//        assertTrue(didItWork);
-//    }
 }

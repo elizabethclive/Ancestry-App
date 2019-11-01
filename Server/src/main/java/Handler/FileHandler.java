@@ -29,17 +29,17 @@ public class FileHandler extends RequestHandler {
                     Files.copy(file.toPath(), respBody);
                     respBody.close();
                 } else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                     File newFile = new File("web/HTML/404.html");
                     OutputStream respBody = exchange.getResponseBody();
                     Files.copy(newFile.toPath(), respBody);
                     respBody.close();
                 }
             } else {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             }
         } catch (IOException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.getResponseBody().close();
 
             e.printStackTrace();
