@@ -5,9 +5,11 @@ import java.sql.Connection;
 import DAO.AuthTokenDAO;
 import DAO.DataAccessException;
 import DAO.Database;
+import DAO.PersonDAO;
 import DAO.UserDAO;
 import Handler.JsonHandler;
 import Model.AuthToken;
+import Model.Person;
 import Model.User;
 import Request.FillRequest;
 import Request.RegisterRequest;
@@ -41,6 +43,9 @@ public class RegisterService {
             user = new User(request.getUsername(), request.getPassword(), request.getEmail(),
                     request.getFirstName(), request.getLastName(), request.getGender(), personID);
             uDao.createUser(user);
+
+            PersonDAO pDao = new PersonDAO(conn);
+            Person person = new Person(request.getFirstName(), request.getLastName(), request.getGender(), personID, null, null, null, request.getUsername());
 
             String authTokenString = RandomString.getRandomString();
             AuthToken authToken = new AuthToken(authTokenString, userName, user.getPersonID());

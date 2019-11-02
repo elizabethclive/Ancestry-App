@@ -71,7 +71,9 @@ public class Database {
             //We pull out a statement from the connection we just established
             //Statements are the basis for our transactions in SQL
             //Format this string to be exactly like a sql create table command
-            String sql = "CREATE TABLE IF NOT EXISTS Event " +
+            // DROP TABLE IF EXISTS AuthToken; DROP TABLE IF EXISTS Event; DROP TABLE IF EXISTS Person; DROP TABLE IF EXISTS User;
+            String sql = "" +
+                    "CREATE TABLE IF NOT EXISTS Event " +
                     "(" +
                     "eventID text not null unique, " +
                     "associatedUsername text not null, " +
@@ -107,16 +109,17 @@ public class Database {
                     "foreign key (userName) references User(userName)" +
                     "foreign key (personID) references Person(personID)" +
                     ");" +
+//                    "DROP TABLE IF EXISTS Person;" +
                     "CREATE TABLE IF NOT EXISTS Person " +
                     "(" +
-                    "personID text not null unique, " +
-                    "associatedUsername text not null, " +
                     "firstName text not null, " +
                     "lastName text not null, " +
                     "gender text not null, " +
+                    "personID text not null unique, " +
                     "fatherID text, " +
                     "motherID text, " +
                     "spouseID text, " +
+                    "associatedUsername text not null, " +
                     "primary key (personID), " +
                     "foreign key (fatherID) references Person(personID), " +
                     "foreign key (motherID) references Person(personID), " +

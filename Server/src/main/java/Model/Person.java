@@ -1,39 +1,23 @@
 package Model;
 
 public class Person {
-    private String personID;
-    private String associatedUsername;
     private String firstName;
     private String lastName;
     private String gender;
+    private String personID;
     private String fatherID;
     private String motherID;
     private String spouseID;
+    private String associatedUsername;
 
-    public Person(String personID, String firstName, String lastName, String gender, String fatherID, String motherID, String spouseID, String associatedUsername) {
-        this.personID = personID;
-        this.associatedUsername = associatedUsername;
+    public Person(String firstName, String lastName, String gender, String personID, String fatherID, String motherID, String spouseID, String associatedUsername) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
+        this.personID = personID;
         this.fatherID = fatherID;
         this.motherID = motherID;
         this.spouseID = spouseID;
-    }
-
-    public String getId() {
-        return personID;
-    }
-
-    public void setId(String id) {
-        this.personID = id;
-    }
-
-    public String getUsername() {
-        return associatedUsername;
-    }
-
-    public void setUsername(String associatedUsername) {
         this.associatedUsername = associatedUsername;
     }
 
@@ -61,6 +45,14 @@ public class Person {
         this.gender = gender;
     }
 
+    public String getId() {
+        return personID;
+    }
+
+    public void setId(String id) {
+        this.personID = id;
+    }
+
     public String getFatherID() {
         return fatherID;
     }
@@ -83,5 +75,13 @@ public class Person {
 
     public void setSpouseID(String spouseID) {
         this.spouseID = spouseID;
+    }
+
+    public String getUsername() {
+        return associatedUsername;
+    }
+
+    public void setUsername(String associatedUsername) {
+        this.associatedUsername = associatedUsername;
     }
 }

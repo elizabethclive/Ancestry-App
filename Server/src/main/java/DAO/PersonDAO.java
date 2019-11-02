@@ -22,19 +22,28 @@ public class PersonDAO {
      * @param person to be put into the database
      */
     public void createPerson(Person person) throws DataAccessException{
-        String sql = "INSERT INTO Person (personID, associatedUsername, firstName, lastName, gender, fatherID, motherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
+//        String sql = "INSERT INTO Person (firstName, associatedUsername, lastName, personID, gender, motherID, fatherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Person (firstName, lastName, gender, personID, fatherID, motherID, spouseID, associatedUsername) VALUES(?,?,?,?,?,?,?,?)";
+//        System.out.println("ID:" + person.getId());
+//        System.out.println("getUsername:" + person.getUsername());
+//        System.out.println("getFirstName:" + person.getFirstName());
+//        System.out.println("getLastName:" + person.getLastName());
+//        System.out.println("getGender:" + person.getGender());
+//        System.out.println("getFatherID:" + person.getFatherID());
+//        System.out.println("ID:" + person.getId());
+//        System.out.println("ID:" + person.getId());
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             //Using the statements built-in set(type) functions we can pick the question mark we want
             //to fill in and give it a proper value. The first argument corresponds to the first
             //question mark found in our sql String
-            stmt.setString(1, person.getId());
-            stmt.setString(2, person.getUsername());
-            stmt.setString(3, person.getFirstName());
-            stmt.setString(4, person.getLastName());
-            stmt.setString(5, person.getGender());
-            stmt.setString(6, person.getFatherID());
-            stmt.setString(7, person.getMotherID());
-            stmt.setString(8, person.getSpouseID());
+            stmt.setString(1, person.getFirstName());
+            stmt.setString(2, person.getLastName());
+            stmt.setString(3, person.getGender());
+            stmt.setString(4, person.getId());
+            stmt.setString(5, person.getFatherID());
+            stmt.setString(6, person.getMotherID());
+            stmt.setString(7, person.getSpouseID());
+            stmt.setString(8, person.getUsername());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Error encountered while inserting person into the database");
@@ -54,8 +63,8 @@ public class PersonDAO {
             stmt.setString(1, personID);
             rs = stmt.executeQuery();
             if (rs.next()) {
-                person = new Person(rs.getString("personID"), rs.getString("firstName"), rs.getString("lastName"), rs.getString("gender"),
-                                    rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"), rs.getString("associatedUsername"));
+                person = new Person(rs.getString("firstName"), rs.getString("lastName"), rs.getString("gender"), rs.getString("personID"),
+                        rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"), rs.getString("associatedUsername"));
                 return person;
             }
         } catch (SQLException e) {
@@ -112,8 +121,8 @@ public class PersonDAO {
             stmt.setString(1, associatedUsername);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                person = new Person(rs.getString("personID"), rs.getString("associatedUsername"), rs.getString("firstName"), rs.getString("lastName"),
-                        rs.getString("gender"), rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"));
+                person = new Person(rs.getString("firstName"), rs.getString("lastName"), rs.getString("gender"), rs.getString("personID"),
+                        rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"), rs.getString("associatedUsername"));
                 persons.add(person);
             }
             return persons;

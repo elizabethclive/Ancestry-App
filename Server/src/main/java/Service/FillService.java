@@ -57,7 +57,7 @@ public class FillService {
 
             EventDAO eDao = new EventDAO(conn);
 
-            Person person = new Person(RandomString.getRandomString(), user.getFirstName(), user.getLastName(), user.getGender(),
+            Person person = new Person(user.getFirstName(), user.getLastName(), user.getGender(), user.getPersonID(),
                     RandomString.getRandomString(), RandomString.getRandomString(), null, request.getUsername());
             pDao.createPerson(person);
             numPersons++;
@@ -75,9 +75,6 @@ public class FillService {
             eDao.createEvent(baptism);
             numEvents += 3;
 
-
-
-
             db.closeConnection(true);
 
             return new FillResult(true, "Successfully added " + numPersons + " persons and " + numEvents + " events to the database.");
@@ -91,7 +88,7 @@ public class FillService {
     };
 
     private void createLists() throws Exception {
-        String path = "C:/Users/lizzy/Downloads/familymapserver/familymapserver/json/";
+        String path = "/users/guest/e/eclive/Downloads/familymapserver/json/";
         Gson gson = new Gson();
 
         File file = new File(path + "fnames.json");
@@ -116,11 +113,21 @@ public class FillService {
             return;
         }
         try {
-            Person mother = new Person(person.getMotherID(), getRandomElement(femaleNames), getRandomElement(surNames), "F",
-                    RandomString.getRandomString(), RandomString.getRandomString(), person.getFatherID(), person.getUsername());
+            String motherFatherID = null;
+            String motherMotherID = null;
+            String fatherFatherID = null;
+            String fatherMotherID = null;
+            if (generations > 1) {
+                motherFatherID = RandomString.getRandomString();
+                motherMotherID = RandomString.getRandomString();
+                fatherFatherID = RandomString.getRandomString();
+                fatherMotherID = RandomString.getRandomString();
+            }
+            Person mother = new Person(getRandomElement(femaleNames), getRandomElement(surNames), "F", person.getMotherID(),
+                    motherFatherID, motherMotherID, person.getFatherID(), person.getUsername());
             pDao.createPerson(mother);
-            Person father = new Person(person.getFatherID(), getRandomElement(femaleNames), getRandomElement(surNames), "M",
-                    RandomString.getRandomString(), RandomString.getRandomString(), person.getMotherID(), person.getUsername());
+            Person father = new Person(getRandomElement(femaleNames), getRandomElement(surNames), "M", person.getFatherID(),
+                    fatherFatherID, fatherMotherID, person.getMotherID(), person.getUsername());
             pDao.createPerson(father);
             numPersons += 2;
             addParents(pDao, mother, generations - 1, birthYear-20, eDao);
