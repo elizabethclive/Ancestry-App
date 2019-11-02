@@ -110,7 +110,7 @@ public class Database {
                     "CREATE TABLE IF NOT EXISTS Person " +
                     "(" +
                     "personID text not null unique, " +
-                    "userName text not null, " +
+                    "associatedUsername text not null, " +
                     "firstName text not null, " +
                     "lastName text not null, " +
                     "gender text not null, " +

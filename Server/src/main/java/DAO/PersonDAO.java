@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import javax.xml.crypto.Data;
-
 import Model.Person;
 
 public class PersonDAO {
@@ -24,7 +22,7 @@ public class PersonDAO {
      * @param person to be put into the database
      */
     public void createPerson(Person person) throws DataAccessException{
-        String sql = "INSERT INTO Person (personID, userName, firstName, lastName, gender, fatherID, motherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Person (personID, associatedUsername, firstName, lastName, gender, fatherID, motherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             //Using the statements built-in set(type) functions we can pick the question mark we want
             //to fill in and give it a proper value. The first argument corresponds to the first
@@ -57,7 +55,7 @@ public class PersonDAO {
             rs = stmt.executeQuery();
             if (rs.next()) {
                 person = new Person(rs.getString("personID"), rs.getString("firstName"), rs.getString("lastName"), rs.getString("gender"),
-                                    rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"), rs.getString("userName"));
+                                    rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"), rs.getString("associatedUsername"));
                 return person;
             }
         } catch (SQLException e) {
@@ -95,10 +93,10 @@ public class PersonDAO {
     }
 
 
-    public void deleteAssociatedPeople(String userName) throws DataAccessException {
-        String sql = "DELETE FROM Person WHERE userName = ?;";
+    public void deleteAssociatedPeople(String associatedUsername) throws DataAccessException {
+        String sql = "DELETE FROM Person WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, userName);
+            stmt.setString(1, associatedUsername);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Error encountered while deleting from the database");
@@ -109,12 +107,12 @@ public class PersonDAO {
         Person person;
         ArrayList<Person> persons = new ArrayList<>();
         ResultSet rs = null;
-        String sql = "SELECT * FROM Person WHERE userName = ?;";
+        String sql = "SELECT * FROM Person WHERE associatedUsername = ?;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, associatedUsername);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                person = new Person(rs.getString("personID"), rs.getString("userName"), rs.getString("firstName"), rs.getString("lastName"),
+                person = new Person(rs.getString("personID"), rs.getString("associatedUsername"), rs.getString("firstName"), rs.getString("lastName"),
                         rs.getString("gender"), rs.getString("fatherID"), rs.getString("motherID"), rs.getString("spouseID"));
                 persons.add(person);
             }
