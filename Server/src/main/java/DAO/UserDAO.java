@@ -58,7 +58,7 @@ public class UserDAO {
                         rs.getString("gender"), rs.getString("personID"));
                 return user;
             } else {
-                System.out.println("Error?????????"); //HELP
+                System.out.println("Error - could not find the user"); //HELP
             }
         } catch (SQLException e) {
             System.out.println("error encountered while finding user");

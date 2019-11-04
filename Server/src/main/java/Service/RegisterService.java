@@ -26,20 +26,17 @@ public class RegisterService {
 
         try {
             Connection conn = db.openConnection();
-//            db.clearTables(); //FIXME
             String userName = request.getUsername();
             String personID = request.getPersonID();
             if (personID == null) {
                 personID = RandomString.getRandomString();
             }
-            System.out.println("before read user");
             UserDAO uDao = new UserDAO(conn);
             User user = uDao.readUser(userName);
             if (user != null) {
                 db.closeConnection(false);
                 return new RegisterResult(false, "Error: This user already exists.");
             }
-            System.out.println("before create user");
             user = new User(request.getUsername(), request.getPassword(), request.getEmail(),
                     request.getFirstName(), request.getLastName(), request.getGender(), personID);
             uDao.createUser(user);

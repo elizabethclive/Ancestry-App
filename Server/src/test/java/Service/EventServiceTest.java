@@ -2,20 +2,20 @@ package Service;
 
 import java.sql.Connection;
 
+import DAO.AuthTokenDAO;
 import DAO.DataAccessException;
 import DAO.Database;
-import DAO.EventDAO;
-import DAO.PersonDAO;
-import DAO.UserDAO;
+import Model.AuthToken;
 import Model.Event;
 import Model.Person;
 import Model.User;
+import Request.EventRequest;
 import Request.LoadRequest;
-import Result.LoadResult;
+import Result.EventResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LoadServiceTest {
+class EventServiceTest {
 
     private Database db;
     private User user = new User("eclive", "password", "eclive@gmail.com",
@@ -26,10 +26,10 @@ class LoadServiceTest {
             234.452f, "country2", "city2", "eventType2", 19622);
     private Person person = new Person("firstname", "lastname", "gender", "personID",
             "fatherID", "motherID", "spouseID", "username");
+    private AuthToken authToken = new AuthToken("authToken", "username", "personID");
     private User[] users = {user};
     private Event[] events = {event, event2};
     private Person[] persons = {person};
-    private Person[] nullPersons = null;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() throws Exception {
@@ -47,7 +47,8 @@ class LoadServiceTest {
     }
 
     @org.junit.jupiter.api.Test
-    void loadServicePass() {
+    void eventServicePass() throws Exception {
+        EventResult eventResult = null;
         try {
             LoadRequest loadRequest = new LoadRequest(users, persons, events);
             LoadService loadService = new LoadService();
@@ -56,48 +57,48 @@ class LoadServiceTest {
             System.out.println("error");
         }
 
-        User compareUser = null;
-        Event compareEvent = null;
-        Event compareEvent2 = null;
-        Person comparePerson = null;
         try {
             Connection conn = db.openConnection();
-            UserDAO uDao = new UserDAO(conn);
-            compareUser = uDao.readUser(user.getUsername());
-
-            EventDAO eDao = new EventDAO(conn);
-            compareEvent = eDao.readEvent(event.getId());
-            compareEvent2 = eDao.readEvent(event2.getId());
-
-            PersonDAO pDao = new PersonDAO(conn);
-            comparePerson = pDao.readPerson(person.getId());
+            AuthTokenDAO aDao = new AuthTokenDAO(conn);
+            aDao.createToken(authToken);
             db.closeConnection(true);
+            EventRequest eventRequest = new EventRequest("authToken", "id");
+            EventService eventService = new EventService();
+            eventResult = eventService.event(eventRequest);
         } catch (DataAccessException e) {
-            try {
-                db.closeConnection(false);
-            } catch (Exception exception) {
-                System.out.println("error");
-            }
+            db.closeConnection(false);
+            System.out.println("error");
         }
-        assertNotNull(compareUser);
-        assertNotNull(compareEvent);
-        assertNotNull(compareEvent2);
-        assertNotNull(comparePerson);
+
+        assertNotNull(eventResult);
+        assertTrue(eventResult.isSuccess());
     }
 
     @org.junit.jupiter.api.Test
-    void loadServiceFail() {
-        LoadResult loadResult = null;
-
+    void eventServiceFail() throws Exception {
+        EventResult eventResult = null;
         try {
-            LoadRequest loadRequest = new LoadRequest(users, nullPersons, events);
+            LoadRequest loadRequest = new LoadRequest(users, persons, events);
             LoadService loadService = new LoadService();
-            loadResult = loadService.load(loadRequest);
+            loadService.load(loadRequest);
         } catch (DataAccessException e) {
             System.out.println("error");
         }
 
-        assertNotNull(loadResult);
-        assertFalse(loadResult.isSuccess());
+        try {
+            Connection conn = db.openConnection();
+            AuthTokenDAO aDao = new AuthTokenDAO(conn);
+            aDao.createToken(authToken);
+            db.closeConnection(true);
+            EventRequest eventRequest = new EventRequest("authToken", "BADID");
+            EventService eventService = new EventService();
+            eventResult = eventService.event(eventRequest);
+        } catch (Exception e) {
+            db.closeConnection(false);
+            System.out.println("error");
+        }
+
+        assertNotNull(eventResult);
+        assertFalse(eventResult.isSuccess());
     }
 }

@@ -24,10 +24,11 @@ public class LoadRequest {
     }
 
     public Person[] getPersons() {
-        for(Person person : persons) {
-            System.out.println("PERSON:" + person.toString());
+        if (this.persons != null) {
+            return persons;
+        } else {
+            return null;
         }
-        return persons;
     }
 
     public void setPersons(Person[] persons) {

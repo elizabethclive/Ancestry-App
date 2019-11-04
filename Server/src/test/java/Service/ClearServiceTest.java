@@ -29,7 +29,7 @@ class ClearServiceTest {
                            234.45f, "country", "city", "eventType", 1962);
         event2 = new Event("id2", "username2", "personID2", 10.32f,
                 234.452f, "country2", "city2", "eventType2", 19622);
-        person = new Person("personID", "firstname", "lastname", "gender",
+        person = new Person("firstname", "lastname", "gender", "personID",
                              "fatherID", "motherID", "spouseID", "username");
         db.openConnection();
         db.createTables();

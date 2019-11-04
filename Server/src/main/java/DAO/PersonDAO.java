@@ -22,20 +22,8 @@ public class PersonDAO {
      * @param person to be put into the database
      */
     public void createPerson(Person person) throws DataAccessException{
-//        String sql = "INSERT INTO Person (firstName, associatedUsername, lastName, personID, gender, motherID, fatherID, spouseID) VALUES(?,?,?,?,?,?,?,?)";
         String sql = "INSERT INTO Person (firstName, lastName, gender, personID, fatherID, motherID, spouseID, associatedUsername) VALUES(?,?,?,?,?,?,?,?)";
-//        System.out.println("ID:" + person.getId());
-//        System.out.println("getUsername:" + person.getUsername());
-//        System.out.println("getFirstName:" + person.getFirstName());
-//        System.out.println("getLastName:" + person.getLastName());
-//        System.out.println("getGender:" + person.getGender());
-//        System.out.println("getFatherID:" + person.getFatherID());
-//        System.out.println("ID:" + person.getId());
-//        System.out.println("ID:" + person.getId());
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            //Using the statements built-in set(type) functions we can pick the question mark we want
-            //to fill in and give it a proper value. The first argument corresponds to the first
-            //question mark found in our sql String
             stmt.setString(1, person.getFirstName());
             stmt.setString(2, person.getLastName());
             stmt.setString(3, person.getGender());

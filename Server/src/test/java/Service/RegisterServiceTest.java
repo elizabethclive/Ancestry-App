@@ -1,14 +1,19 @@
 package Service;
 
+import java.sql.Connection;
+
+import DAO.DataAccessException;
 import DAO.Database;
-import Request.LoginRequest;
+import DAO.UserDAO;
+import Model.Event;
+import Model.Person;
+import Model.User;
 import Request.RegisterRequest;
-import Result.LoginResult;
 import Result.RegisterResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LoginServiceTest {
+class RegisterServiceTest {
     private Database db;
 
     @org.junit.jupiter.api.BeforeEach
@@ -27,9 +32,8 @@ class LoginServiceTest {
     }
 
     @org.junit.jupiter.api.Test
-    void loginServicePass() {
+    void registerServicePass() {
         RegisterResult registerResult = null;
-        LoginResult loginResult = null;
         try {
             RegisterRequest registerRequest = new RegisterRequest("username", "password",
                     "email", "firstname", "lastname", "gender", "personid");
@@ -39,44 +43,42 @@ class LoginServiceTest {
             System.out.println("error");
         }
 
+        assertNotNull(registerResult);
         assertTrue(registerResult.isSuccess());
 
+        User compareUser = null;
         try {
-            LoginRequest loginRequest = new LoginRequest("username", "password");
-            LoginService loginService = new LoginService();
-            loginResult = loginService.login(loginRequest);
-        } catch (Exception e) {
-            System.out.println("error");
+            Connection conn = db.openConnection();
+            UserDAO uDao = new UserDAO(conn);
+            compareUser = uDao.readUser("username");
+            db.closeConnection(true);
+        } catch (DataAccessException e) {
+            try {
+                db.closeConnection(false);
+            } catch (Exception exception) {
+                System.out.println("error");
+            }
         }
-
-        assertNotNull(loginResult);
-        assertTrue(loginResult.isSuccess());
+        assertNotNull(compareUser);
     }
 
     @org.junit.jupiter.api.Test
-    void loginServiceFail() {
-        RegisterResult registerResult = null;
-        LoginResult loginResult = null;
+    void registerServiceFail() {
+        RegisterResult registerResultPass = null;
+        RegisterResult registerResultFail = null;
         try {
             RegisterRequest registerRequest = new RegisterRequest("username", "password",
                     "email", "firstname", "lastname", "gender", "personid");
             RegisterService registerService = new RegisterService();
-            registerResult = registerService.register(registerRequest);
+            registerResultPass = registerService.register(registerRequest);
+            registerResultFail = registerService.register(registerRequest);
         } catch (Exception e) {
             System.out.println("error");
         }
 
-        assertTrue(registerResult.isSuccess());
-
-        try {
-            LoginRequest loginRequest = new LoginRequest("username", "BADPASSWORD");
-            LoginService loginService = new LoginService();
-            loginResult = loginService.login(loginRequest);
-        } catch (Exception e) {
-            System.out.println("error");
-        }
-
-        assertNotNull(loginResult);
-        assertFalse(loginResult.isSuccess());
+        assertNotNull(registerResultPass);
+        assertNotNull(registerResultFail);
+        assertTrue(registerResultPass.isSuccess());
+        assertFalse(registerResultFail.isSuccess());
     }
 }

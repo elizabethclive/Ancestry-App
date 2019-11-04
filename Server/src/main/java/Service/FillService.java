@@ -88,7 +88,8 @@ public class FillService {
     };
 
     private void createLists() throws Exception {
-        String path = "/users/guest/e/eclive/Downloads/familymapserver/json/";
+//        String path = "/users/guest/e/eclive/Downloads/familymapserver/json/";
+        String path = "C:/Users/lizzy/Downloads/familymapserver/familymapserver/json/";
         Gson gson = new Gson();
 
         File file = new File(path + "fnames.json");
