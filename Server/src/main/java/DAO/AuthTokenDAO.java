@@ -83,17 +83,5 @@ public class AuthTokenDAO {
         } catch (DataAccessException e) {
             System.out.println(e);
         }
-    };
-
-    /**
-     * Clears all events in the database
-     */
-    public void clear() throws DataAccessException {
-        try (Statement stmt = conn.createStatement()){
-            String sql = "DELETE FROM AuthToken;";
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            throw new DataAccessException("SQL Error encountered while clearing authToken table");
-        }
     }
 }

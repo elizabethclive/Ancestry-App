@@ -23,10 +23,8 @@ public class EventService {
 
         try {
             Connection conn = db.openConnection();
-
             AuthTokenDAO aDao = new AuthTokenDAO(conn);
             AuthToken authToken = aDao.readToken(request.getToken());
-
             if (authToken == null) {
                 db.closeConnection(false);
                 return new EventResult(false, "Error: Invalid authorization authToken!");
@@ -34,7 +32,6 @@ public class EventService {
 
             EventDAO eDao = new EventDAO(conn);
             Event event = eDao.readEvent(request.getEventID());
-
             if (event == null) {
                 db.closeConnection(false);
                 return new EventResult(false, "Error: There is no event");

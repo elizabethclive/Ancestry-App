@@ -13,13 +13,11 @@ import java.io.OutputStreamWriter;
 public class RequestHandler implements HttpHandler {
 
     public void writeString(String str, OutputStream os) throws IOException {
-        System.out.println(str);
         OutputStreamWriter sw = new OutputStreamWriter(os);
         BufferedWriter bw = new BufferedWriter(sw);
         bw.write(str);
         bw.flush();
     }
-
 
     public String readString(InputStream is) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -34,7 +32,5 @@ public class RequestHandler implements HttpHandler {
 
 
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
-
-    }
+    public void handle(HttpExchange httpExchange) throws IOException {}
 }

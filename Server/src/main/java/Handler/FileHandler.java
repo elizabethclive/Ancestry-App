@@ -12,10 +12,8 @@ public class FileHandler extends RequestHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-
         try {
             if (exchange.getRequestMethod().toUpperCase().equals("GET")) {
-
                 String urlPath = exchange.getRequestURI().toString();
                 if (urlPath == null || urlPath.equals("/")) {
                     urlPath = "/index.html";
@@ -41,9 +39,7 @@ public class FileHandler extends RequestHandler {
         } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.getResponseBody().close();
-
             e.printStackTrace();
         }
     }
-
 }

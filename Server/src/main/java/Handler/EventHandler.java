@@ -31,7 +31,6 @@ public class EventHandler extends RequestHandler {
                         EventsRequest eventsRequest = new EventsRequest(authToken);
                         EventsService eventsService = new EventsService();
                         EventsResult eventsResult = eventsService.events(eventsRequest);
-
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
                         OutputStream respBody = exchange.getResponseBody();
@@ -45,6 +44,7 @@ public class EventHandler extends RequestHandler {
                         EventRequest eventRequest = new EventRequest(authToken, eventID);
                         EventService eventService = new EventService();
                         EventResult eventResult = eventService.event(eventRequest);
+                        System.out.println("event result " + eventResult.getResult());
 
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 

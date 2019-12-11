@@ -127,17 +127,4 @@ public class PersonDAO {
             }
         }
     }
-
-
-    /**
-     * Clears all people in the database
-     */
-    public void clear() throws DataAccessException {
-        try (Statement stmt = conn.createStatement()){
-            String sql = "DELETE FROM Person;";
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            throw new DataAccessException("SQL Error encountered while clearing person table");
-        }
-    }
 }

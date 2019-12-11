@@ -32,13 +32,11 @@ public class RegisterHandler extends RequestHandler {
                     FillService fillService = new FillService();
                     fillService.fill(fillRequest);
 
-                    System.out.println("register result is a success");
                     AuthToken token = JsonHandler.deserialize(registerResult.getResult(), AuthToken.class);
                     String deserializedResult = token.getToken();
                     exchange.getResponseHeaders().set("Authorization", deserializedResult);
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 } else {
-                    System.out.println("Register result is not a success");
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 }
                 OutputStream respBody = exchange.getResponseBody();

@@ -23,10 +23,8 @@ public class PersonService {
 
         try {
             Connection conn = db.openConnection();
-
             AuthTokenDAO aDao = new AuthTokenDAO(conn);
             AuthToken authToken = aDao.readToken(request.getToken());
-
             if (authToken == null) {
                 db.closeConnection(false);
                 return new PersonResult(false, "Error: Invalid authorization authToken!");
@@ -34,7 +32,6 @@ public class PersonService {
 
             PersonDAO pDao = new PersonDAO(conn);
             Person person = pDao.readPerson(request.getPersonID());
-
             if (person == null) {
                 db.closeConnection(false);
                 return new PersonResult(false, "Error: There is no person");

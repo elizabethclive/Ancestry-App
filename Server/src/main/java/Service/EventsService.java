@@ -7,7 +7,6 @@ import DAO.AuthTokenDAO;
 import DAO.DataAccessException;
 import DAO.Database;
 import DAO.EventDAO;
-import DAO.PersonDAO;
 import DAO.UserDAO;
 import Handler.JsonHandler;
 import Model.AuthToken;
@@ -27,10 +26,8 @@ public class EventsService {
 
         try {
             Connection conn = db.openConnection();
-
             AuthTokenDAO aDao = new AuthTokenDAO(conn);
             AuthToken authToken = aDao.readToken(request.getToken());
-
             if (authToken == null) {
                 db.closeConnection(false);
                 return new EventsResult(false, "Error: Invalid authorization authToken");
@@ -40,7 +37,6 @@ public class EventsService {
             UserDAO uDao = new UserDAO(conn);
             User user = uDao.readUser(authToken.getUsername());
             ArrayList<Event> events = eDao.getAssociatedEvents(user.getUsername());
-
             if (events == null) {
                 db.closeConnection(false);
                 return new EventsResult(false, "Error: No events found");

@@ -95,7 +95,6 @@ class EventsServiceTest {
             EventsRequest eventsRequest = new EventsRequest("badAuthToken");
             EventsService eventsService = new EventsService();
             eventsResult = eventsService.events(eventsRequest);
-            System.out.println(eventsResult.getResult());
         } catch (Exception e) {
             System.out.println("error");
         }

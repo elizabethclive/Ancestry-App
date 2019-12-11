@@ -17,6 +17,7 @@ public class LoginHandler extends RequestHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~`IN HERERERERE!!!!");
             if (exchange.getRequestMethod().toUpperCase().equals("POST")) {
                 InputStream reqBody = exchange.getRequestBody();
                 String reqData = readString(reqBody);
@@ -24,13 +25,15 @@ public class LoginHandler extends RequestHandler {
                 reqBody.close();
                 LoginService loginService = new LoginService();
                 LoginResult loginResult = loginService.login(loginRequest);
-
+                System.out.println("Just got login result: " + loginResult.isSuccess() + " message: " + loginResult.getResult());
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
                 OutputStream respBody = exchange.getResponseBody();
                 if (loginResult.isSuccess()) {
+                    System.out.println("writing success string to respbody");
                     writeString(loginResult.getResult(), respBody);
                 } else {
+                    System.out.println("writing serialized result to respbody");
                     writeString(JsonHandler.serialize(loginResult), respBody);
                 }
                 respBody.close();

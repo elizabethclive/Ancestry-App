@@ -22,13 +22,6 @@ import Service.ClearService;
 */
 public class ClearHandler extends RequestHandler {
 
-    // The HttpExchange object gives the handler access to all of the
-    // details of the HTTP request (Request type [GET or POST],
-    // request headers, request body, etc.).
-    // The HttpExchange object also gives the handler the ability
-    // to construct an HTTP response and send it back to the client
-    // (Status code, headers, response body, etc.).
-
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
@@ -41,7 +34,6 @@ public class ClearHandler extends RequestHandler {
 
                 writeString(JsonHandler.serialize(result), respBody);
                 respBody.close();
-
             } else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             }

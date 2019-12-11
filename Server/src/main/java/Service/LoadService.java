@@ -61,5 +61,5 @@ public class LoadService {
         }
 
         return new LoadResult(true,"Successfully added " + numUsers + " users, " + numPersons + " persons, and " + numEvents + " events to the database.");
-    };
+    }
 }

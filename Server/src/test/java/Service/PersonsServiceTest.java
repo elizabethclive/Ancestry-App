@@ -95,7 +95,6 @@ class PersonsServiceTest {
             PersonsRequest personsRequest = new PersonsRequest("badAuthToken");
             PersonsService personsService = new PersonsService();
             personsResult = personsService.persons(personsRequest);
-            System.out.println(personsResult.getResult());
         } catch (Exception e) {
             System.out.println("error");
         }
