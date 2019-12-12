@@ -24,18 +24,6 @@ import Model.Event;
 import Model.Person;
 import Util.ListItem;
 
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_AZURE;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_BLUE;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_MAGENTA;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ORANGE;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ROSE;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_VIOLET;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_YELLOW;
-import static com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker;
-
 public class PersonActivity extends AppCompatActivity {
 
     ExpandableListAdapter listAdapter;

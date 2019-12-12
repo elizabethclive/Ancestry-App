@@ -6,11 +6,14 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import Model.Model;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 public class MainActivity extends AppCompatActivity {
     private LoginFragment loginFragment;
+    private MapFragment mapFragment;
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,22 @@ public class MainActivity extends AppCompatActivity {
 
         Model.getInstance().setInEventActivity(false);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        System.out.println("_________________RESUMING----------");
+//        getSupportFragmentManager().beginTransaction().replace(Fragment_Container, mapFragment)
+//        FragmentManager fm = this.getSupportFragmentManager();
+//        mapFragment = new MapFragment();
+//        fm.beginTransaction().replace(R.id.map_fragment, mapFragment).commit();
+
+    }
+//
+//    @Override
+//    public void onMapReady(GoogleMap googleMap) {
+//        mMap = googleMap;
+//    }
 
 
 

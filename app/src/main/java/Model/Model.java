@@ -1,6 +1,8 @@
 package Model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +65,26 @@ public class Model {
     }
 
     public Person[] getPersons() {
-        return persons;
+        if (!settings.filterFathersSide() && !settings.filterMothersSide()) {
+            return persons;
+        }
+        ArrayList<Person> currentPersons = new ArrayList<Person>();
+        Person userPerson = getPersonFromId(personID);
+        currentPersons.add(userPerson);
+        if (settings.filterFathersSide() && !settings.filterMothersSide()) {
+            Person father = getPersonFromId(userPerson.getFatherID());
+            currentPersons = getAncestors(father, currentPersons);
+        }
+        if (settings.filterMothersSide() && !settings.filterFathersSide()) {
+            Person mother = getPersonFromId(userPerson.getMotherID());
+            currentPersons = getAncestors(mother, currentPersons);
+        }
+
+        Person[] returnPersons = new Person[currentPersons.size()];
+        for (int i = 0; i < returnPersons.length; i++) {
+            returnPersons[i] = currentPersons.get(i);
+        }
+        return returnPersons;
     }
 
     public void setPersons(Person[] persons) {
@@ -74,7 +95,63 @@ public class Model {
     }
 
     public Event[] getEvents() {
-        return events;
+        ArrayList<Event> currentEvents = new ArrayList<Event>();
+        ArrayList<Event> returnEventsList = new ArrayList<Event>();
+        currentEvents.addAll(Arrays.asList(events));
+//        Person userPerson = getPersonFromId(personID);
+        Person[] currentPersons = getPersons();
+        currentEvents = filterEvents(currentPersons);
+
+        if (!settings.filterMaleEvents() && !settings.filterFemaleEvents()) {
+            returnEventsList = currentEvents;
+        }
+        if (settings.filterMaleEvents() && !settings.filterFemaleEvents()) {
+            for (Event event : currentEvents) {
+                if (getPersonFromId(event.getPersonID()).getGender().toLowerCase().equals("m")) {
+                    returnEventsList.add(event);
+                }
+            }
+        }
+        if (settings.filterFemaleEvents() && !settings.filterMaleEvents()) {
+            for (Event event : currentEvents) {
+                if (getPersonFromId(event.getPersonID()).getGender().toLowerCase().equals("f")) {
+                    returnEventsList.add(event);
+                }
+            }
+        }
+
+        Event[] returnEvents = new Event[returnEventsList.size()];
+        for (int i = 0; i < returnEvents.length; i++) {
+            returnEvents[i] = returnEventsList.get(i);
+        }
+
+        return returnEvents;
+    }
+
+    public ArrayList<Person> getAncestors(Person person, ArrayList<Person> currentPersons) {
+        currentPersons.add(person);
+        if (person.getMotherID() != null) {
+            Person mother = getPersonFromId(person.getMotherID());
+            currentPersons = getAncestors(mother, currentPersons);
+        }
+        if (person.getFatherID() != null) {
+            Person father = getPersonFromId(person.getFatherID());
+            currentPersons = getAncestors(father, currentPersons);
+        }
+        return currentPersons;
+    }
+
+    public ArrayList<Event> filterEvents(Person[] currentPersons) {
+        ArrayList<Event> currentEvents = new ArrayList<Event>();
+        for (int i = 0; i < events.length; i++) {
+            Person currentPerson = getPersonFromId(events[i].getPersonID());
+            for (int j = 0; j < currentPersons.length; j++) {
+                if (currentPersons[j].getId().equals(events[i].getPersonID())) {
+                    currentEvents.add(events[i]);
+                }
+            }
+        }
+        return currentEvents;
     }
 
     public void setEvents(Event[] events) {
@@ -195,9 +272,10 @@ public class Model {
 
     public ArrayList<Event> getPersonEvents(Person currentPerson) {
         ArrayList<Event> currentEvents = new ArrayList<>();
-        for (int i = 0; i < events.length; i++) {
-            if (events[i].getPersonID().equals(currentPerson.getId())) {
-                currentEvents.add(events[i]);
+        Event[] filteredEvents = getEvents();
+        for (int i = 0; i < filteredEvents.length; i++) {
+            if (filteredEvents[i].getPersonID().equals(currentPerson.getId())) {
+                currentEvents.add(filteredEvents[i]);
             }
         }
 
@@ -255,10 +333,13 @@ public class Model {
     public static Model getInstance() {
         if(instance == null) {
             instance = new Model();
+            instance.setSettings(new Settings());
         }
 
         return instance;
     }
 
-    private Model() {}
+    private Model() {
+        this.setSettings(new Settings());
+    }
 }

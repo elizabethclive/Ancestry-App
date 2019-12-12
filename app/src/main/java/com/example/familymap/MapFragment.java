@@ -27,6 +27,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
@@ -59,6 +61,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private ImageView imageViewIcon;
     private RelativeLayout banner;
     private ArrayList<Float> colors = new ArrayList();
+    private Event[] events;
 
     public static MapFragment newInstance(){
         return new MapFragment();
@@ -101,8 +104,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.map_menu, menu);
-//        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
         return;
@@ -123,17 +124,47 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
+
+        if (mMap == null) return;
+        mMap.clear();
+
+        addEvents();
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Toast.makeText(getContext(), "asdkfjalsdkfjlkasjflaksdjf", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
-        Event[] events = Model.getInstance().getEvents();
+        addEvents();
+//        events = Model.getInstance().getEvents();
+//        mMap = googleMap;
+//        for (int i = 0; i < events.length-1; i++) {
+//            LatLng location = new LatLng(events[i].getLatitude(), events[i].getLongitude());
+//            addMarker(events[i].getCity(), location, events[i].getEventType(), events[i].getId());
+////            mMap.addMarker(new MarkerOptions().position(location).title(events[i].getUsername()).icon(defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+//            if (i == 0) {
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+//            }
+//        }
+//        if (Model.getInstance().getInEventActivity()) {
+//            LatLng location = new LatLng(Model.getInstance().getSelectedEvent().getLatitude(), Model.getInstance().getSelectedEvent().getLongitude());
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+//            setDisplayText(Model.getInstance().getSelectedEvent().getId());
+//        }
+//        setMarkerListener();
+//        drawLine(new LatLng(-89, -179), new LatLng(89,179));
+    }
+
+    public void addEvents() {
+        events = Model.getInstance().getEvents();
         for (int i = 0; i < events.length-1; i++) {
             LatLng location = new LatLng(events[i].getLatitude(), events[i].getLongitude());
+            String city = events[i].getCity();
+            String eventType = events[i].getEventType();
+            String ID = events[i].getId();
             addMarker(events[i].getCity(), location, events[i].getEventType(), events[i].getId());
 //            mMap.addMarker(new MarkerOptions().position(location).title(events[i].getUsername()).icon(defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
             if (i == 0) {
@@ -157,6 +188,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //            options.icon(defaultMarker(colors.get(colorIndex)));
 //            if (colorIndex == colors.size() - 1) colorIndex = 0; else colorIndex++;
         }
+        Integer eventt = Model.getInstance().getColorMap().get(eventType);
+        Float color = colors.get(eventt);
+
         options.icon(defaultMarker(colors.get(Model.getInstance().getColorMap().get(eventType))));
 
         Marker marker = mMap.addMarker(options);
@@ -175,7 +209,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     void setDisplayText(String eventID) {
-        Event[] events = Model.getInstance().getEvents();
         Event event = null;
         Person[] persons = Model.getInstance().getPersons();
         StringBuilder sb = new StringBuilder();
@@ -206,5 +239,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
         imageViewIcon.setImageDrawable(genderIcon);
     }
+
+    void drawLine(LatLng point1, LatLng point2, Integer lineWidth) {
+        Polyline line = mMap.addPolyline(new PolylineOptions()
+                .add(point1, point2)
+                .width(lineWidth)
+                .color(Color.RED));
+    }
+
+
 }
 

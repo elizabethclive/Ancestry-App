@@ -19,7 +19,4 @@
         android:id="@+id/map_fragment">
     </FrameLayout>
 
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="top">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top">
 
+
+    <RelativeLayout
+        android:id="@+id/settings"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_height="fill_parent"
+        android:paddingTop="15dp"
+        android:paddingLeft="8dp">
 
         <RelativeLayout
-            android:id="@+id/banner"
+            android:id="@+id/life_story_lines_wrapper"
             android:layout_width="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_height="180dp"
-            android:paddingTop="15dp"
-            android:paddingLeft="8dp">
+            android:layout_height="65dp">
 
             <LinearLayout
-                android:id="@+id/first_name_wrapper"
+                android:id="@+id/life_story_lines_inner_wrapper"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:orientation="vertical"
                 android:gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/life_story_lines_label"
                     android:text="Life Story Lines"
                     android:layout_width="fill_parent"
                     android:layout_height="35dp"
@@ -32,43 +39,9 @@
                     android:paddingTop="5dp"
                     android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
 
-                <Switch
-                    android:id="@+id/simpleSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-<!--                <TextView-->
-<!--                    android:text="First Name"-->
-<!--                    android:layout_width="fill_parent"-->
-<!--                    android:layout_height="25dp"-->
-<!--                    android:gravity="center_vertical"-->
-<!--                    android:textSize="15sp"-->
-<!--                    android:paddingBottom="5dp"-->
-<!--                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />-->
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/last_name_wrapper"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:layout_below="@+id/first_name_wrapper">
-
                 <TextView
-                    android:id="@+id/last_name"
-                    android:text="Parker"
-                    android:layout_width="fill_parent"
-                    android:layout_height="35dp"
-                    android:gravity="center_vertical"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:paddingTop="5dp"
-                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
-
-                <TextView
-                    android:text="Last Name"
+                    android:text="SHOW LIFE STORY LINES"
+                    android:layout_below="@id/life_story_lines_label"
                     android:layout_width="fill_parent"
                     android:layout_height="25dp"
                     android:gravity="center_vertical"
@@ -78,38 +51,337 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/gender_wrapper"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:layout_below="@+id/last_name_wrapper">
-
-                <TextView
-                    android:id="@+id/gender"
-                    android:text="Female"
-                    android:layout_width="fill_parent"
-                    android:layout_height="35dp"
-                    android:gravity="center_vertical"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:paddingTop="5dp"
-                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
-
-                <TextView
-                    android:text="Gender"
-                    android:layout_width="fill_parent"
-                    android:layout_height="25dp"
-                    android:gravity="center_vertical"
-                    android:textSize="15sp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
-
-            </LinearLayout>
+            <Switch
+                android:id="@+id/life_story_lines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/life_story_lines_inner_wrapper"/>
 
         </RelativeLayout>
 
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/family_tree_lines_wrapper"
+            android:layout_below="@+id/life_story_lines_wrapper"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="65dp">
 
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+            <LinearLayout
+                android:id="@+id/family_tree_lines_inner_wrapper"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/family_tree_lines_label"
+                    android:text="Family Tree Lines"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+                <TextView
+                    android:text="SHOW FAMILY TREE LINES"
+                    android:layout_below="@id/family_tree_lines_label"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/family_tree_lines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/family_tree_lines_inner_wrapper"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/spouse_lines_wrapper"
+            android:layout_below="@+id/family_tree_lines_wrapper"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="65dp">
+
+            <LinearLayout
+                android:id="@+id/spouse_lines_inner_wrapper"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/spouse_lines_label"
+                    android:text="Spouse Lines"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+                <TextView
+                    android:text="SHOW SPOUSE LINES"
+                    android:layout_below="@id/spouse_lines_label"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/spouse_lines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/spouse_lines_inner_wrapper"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fathers_side_wrapper"
+            android:layout_below="@+id/spouse_lines_wrapper"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="65dp">
+
+            <LinearLayout
+                android:id="@+id/fathers_side_inner_wrapper"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/fathers_side_label"
+                    android:text="Father's Side"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+                <TextView
+                    android:text="FILTER BY FATHER'S SIDE OF FAMILY"
+                    android:layout_below="@id/fathers_side_label"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/fathers_side"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/fathers_side_inner_wrapper"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/mothers_side_wrapper"
+            android:layout_below="@+id/fathers_side_wrapper"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="65dp">
+
+            <LinearLayout
+                android:id="@+id/mothers_side_inner_wrapper"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/mothers_side_label"
+                    android:text="Mother's Side"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+                <TextView
+                    android:text="FILTER BY MOTHER'S SIDE OF FAMILY"
+                    android:layout_below="@id/mothers_side_label"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/mothers_side"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/mothers_side_inner_wrapper"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/male_events_wrapper"
+            android:layout_below="@+id/mothers_side_wrapper"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="65dp">
+
+            <LinearLayout
+                android:id="@+id/male_events_inner_wrapper"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/male_events_label"
+                    android:text="Male Events"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+                <TextView
+                    android:text="FILTER EVENTS BASED ON GENDER"
+                    android:layout_below="@id/male_events_label"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/male_events"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/male_events_inner_wrapper"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/female_events_wrapper"
+            android:layout_below="@+id/male_events_wrapper"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="65dp">
+
+            <LinearLayout
+                android:id="@+id/female_events_inner_wrapper"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/female_events_label"
+                    android:text="Female Events"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+                <TextView
+                    android:text="FILTER EVENTS BASED ON GENDER"
+                    android:layout_below="@id/female_events_label"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/female_events"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/female_events_inner_wrapper"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/logout_wrapper"
+            android:layout_below="@+id/female_events_wrapper"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="65dp">
+
+            <LinearLayout
+                android:id="@+id/logout_inner_wrapper"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/logout_label"
+                    android:text="Logout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:gravity="center_vertical"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+                <TextView
+                    android:text="RETURN TO LOGIN SCREEN"
+                    android:layout_below="@id/logout_label"
+                    android:layout_width="fill_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
+
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/logout_inner_wrapper"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
