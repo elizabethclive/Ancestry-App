@@ -112,11 +112,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.search) {
-                Toast.makeText(getContext(), "Search selected", Toast.LENGTH_SHORT).show();
                 Intent searchIntent = new Intent(getActivity(), SearchActivity.class);
                 getActivity().startActivity(searchIntent);
         } else if (item.getItemId() == R.id.settings) {
-                Toast.makeText(getContext(), "Settings selected", Toast.LENGTH_SHORT).show();
                 Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
                 getActivity().startActivity(settingsIntent);
         }
@@ -136,40 +134,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(getContext(), "asdkfjalsdkfjlkasjflaksdjf", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
         addEvents();
-//        events = Model.getInstance().getEvents();
-//        mMap = googleMap;
-//        for (int i = 0; i < events.length-1; i++) {
-//            LatLng location = new LatLng(events[i].getLatitude(), events[i].getLongitude());
-//            addMarker(events[i].getCity(), location, events[i].getEventType(), events[i].getId());
-////            mMap.addMarker(new MarkerOptions().position(location).title(events[i].getUsername()).icon(defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-//            if (i == 0) {
-//                mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-//            }
-//        }
-//        if (Model.getInstance().getInEventActivity()) {
-//            LatLng location = new LatLng(Model.getInstance().getSelectedEvent().getLatitude(), Model.getInstance().getSelectedEvent().getLongitude());
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-//            setDisplayText(Model.getInstance().getSelectedEvent().getId());
-//        }
-//        setMarkerListener();
-//        drawLine(new LatLng(-89, -179), new LatLng(89,179));
     }
 
     public void addEvents() {
         events = Model.getInstance().getEvents();
-        for (int i = 0; i < events.length-1; i++) {
-            LatLng location = new LatLng(events[i].getLatitude(), events[i].getLongitude());
-            String city = events[i].getCity();
-            String eventType = events[i].getEventType();
-            String ID = events[i].getId();
-            addMarker(events[i].getCity(), location, events[i].getEventType(), events[i].getId());
-//            mMap.addMarker(new MarkerOptions().position(location).title(events[i].getUsername()).icon(defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-            if (i == 0) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-            }
+        for (Event currentEvent : events) {
+            LatLng location = new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude());
+            String city = currentEvent.getCity();
+            String eventType = currentEvent.getEventType();
+            String ID = currentEvent.getId();
+            addMarker(currentEvent.getCity(), location, currentEvent.getEventType(), currentEvent.getId());
+//            if (i == 0) {
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+//            }
         }
         if (Model.getInstance().getInEventActivity()) {
             LatLng location = new LatLng(Model.getInstance().getSelectedEvent().getLatitude(), Model.getInstance().getSelectedEvent().getLongitude());
@@ -180,29 +159,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     void addMarker(String city, LatLng latLng, String eventType, String eventID) {
+        if (eventID.equals("Mrs_Jones_Surf")) {
+            System.out.println("adsfs");
+        }
         MarkerOptions options = new MarkerOptions().position(latLng).title(city);
         eventType = eventType.toLowerCase();
         if (!Model.getInstance().getColorMap().containsKey(eventType)) {
             Model.getInstance().addToColorMap(eventType);
-//            Model.getInstance().getColorMap().put(eventType, colorIndex);
-//            options.icon(defaultMarker(colors.get(colorIndex)));
-//            if (colorIndex == colors.size() - 1) colorIndex = 0; else colorIndex++;
         }
-        Integer eventt = Model.getInstance().getColorMap().get(eventType);
-        Float color = colors.get(eventt);
 
         options.icon(defaultMarker(colors.get(Model.getInstance().getColorMap().get(eventType))));
 
         Marker marker = mMap.addMarker(options);
         marker.setTag(eventID);
+
     }
 
     void setMarkerListener() {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+//                clearLines();
                 String eventID = (String)marker.getTag();
                 setDisplayText(eventID);
+                addLines(eventID);
                 return false;
             }
         });
@@ -211,7 +191,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     void setDisplayText(String eventID) {
         Event event = null;
         Person[] persons = Model.getInstance().getPersons();
-        StringBuilder sb = new StringBuilder();
         Drawable genderIcon;
         for (int i = 0; i < events.length; i++) {
             if (events[i].getId() == eventID) {
@@ -240,13 +219,49 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         imageViewIcon.setImageDrawable(genderIcon);
     }
 
-    void drawLine(LatLng point1, LatLng point2, Integer lineWidth) {
+    void addLines(String eventID) {
+        if (Model.getInstance().getSettings().showFamilyTreeLines()) {
+            addFamilyLines(eventID);
+        }
+        if (Model.getInstance().getSettings().showLifeStoryLines()) {
+            addLifeStoryLines(eventID);
+        }
+        if (Model.getInstance().getSettings().showSpouseLines()) {
+            addSpouseLines(eventID);
+        }
+    }
+
+    void addSpouseLines(String eventID) {
+        Event event = Model.getInstance().getEventFromId(eventID);
+        Person person = Model.getInstance().getPersonFromId(event.getPersonID());
+        if (person.getSpouseID() != null) {
+//            Event personEvent = Model.getInstance().getPersonEvents(person).get(0);
+            LatLng selectedPersonLoc = new LatLng(event.getLatitude(), event.getLongitude());
+
+            Person spouse = Model.getInstance().getPersonFromId(person.getSpouseID());
+            Event spouseEvent = Model.getInstance().getPersonEvents(spouse).get(0);
+            LatLng spouseLoc = new LatLng(spouseEvent.getLatitude(), spouseEvent.getLongitude());
+            drawLine(selectedPersonLoc, spouseLoc, 10, Color.RED);
+        }
+    }
+
+    void addFamilyLines(String eventID) {
+
+    }
+
+    void addLifeStoryLines(String eventID) {
+
+    }
+
+    void drawLine(LatLng point1, LatLng point2, Integer lineWidth, Integer color) {
         Polyline line = mMap.addPolyline(new PolylineOptions()
                 .add(point1, point2)
                 .width(lineWidth)
-                .color(Color.RED));
+                .color(color));
     }
 
+    void clearLines() {
 
+    }
 }
 
