@@ -31,9 +31,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_settings);
 
         settings = Model.getInstance().getSettings();
-
         findViewById(android.R.id.content);
-
         View v = findViewById(android.R.id.content);
         lifeStoryLinesSwitch = v.findViewById(R.id.life_story_lines);
         familyTreeLinesSwitch = v.findViewById(R.id.family_tree_lines);
@@ -42,8 +40,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mothersSideSwitch = v.findViewById(R.id.mothers_side);
         maleEventsSwitch = v.findViewById(R.id.male_events);
         femaleEventsSwitch = v.findViewById(R.id.female_events);
-        logout = v.findViewById(R.id.logout_inner_wrapper);
 
+        logout = v.findViewById(R.id.logout_inner_wrapper);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

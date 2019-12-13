@@ -101,7 +101,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
-
         return;
     }
 
@@ -140,9 +139,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             String eventType = currentEvent.getEventType();
             String ID = currentEvent.getId();
             addMarker(currentEvent.getCity(), location, currentEvent.getEventType(), currentEvent.getId());
-//            if (i == 0) {
-//                mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-//            }
         }
         if (Model.getInstance().getInEventActivity()) {
             LatLng location = new LatLng(Model.getInstance().getSelectedEvent().getLatitude(), Model.getInstance().getSelectedEvent().getLongitude());
@@ -158,9 +154,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (!Model.getInstance().getColorMap().containsKey(eventType)) {
             Model.getInstance().addToColorMap(eventType);
         }
-
         options.icon(defaultMarker(colors.get(Model.getInstance().getColorMap().get(eventType))));
-
         Marker marker = mMap.addMarker(options);
         marker.setTag(eventID);
 
@@ -170,15 +164,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-//                clearLines();
                 for (Polyline line : lines) {
                     line.remove();
                 }
                 lines.clear();
+
                 String eventID = (String)marker.getTag();
                 setDisplayText(eventID);
                 persons = Model.getInstance().getPersons();
                 addLines(eventID);
+
                 return false;
             }
         });
@@ -187,7 +182,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     void setDisplayText(String eventID) {
         Event event = null;
         persons = Model.getInstance().getPersons();
-        Drawable genderIcon;
         for (int i = 0; i < events.length; i++) {
             if (events[i].getId() == eventID) {
                 event = events[i];
@@ -202,16 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         textViewName.setText(Model.getInstance().getFullName(Model.getInstance().getSelectedPerson()));
         textViewLocation.setText(Model.getInstance().getEventDetails(event));
         String gender = Model.getInstance().getSelectedPerson().getGender().toLowerCase();
-        if (gender.equals("m")) {
-            genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_male).
-                    colorRes(R.color.male_icon).sizeDp(40);
-        } else if (gender.equals("f")) {
-            genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_female).
-                    colorRes(R.color.female_icon).sizeDp(40);
-        } else {
-            genderIcon = new IconDrawable(getActivity(), FontAwesomeIcons.fa_map_marker).
-                    colorRes(R.color.event_icon).sizeDp(40);
-        }
+        Drawable genderIcon = Model.getInstance().getGenderIcon(getActivity(), gender);
         imageViewIcon.setImageDrawable(genderIcon);
     }
 

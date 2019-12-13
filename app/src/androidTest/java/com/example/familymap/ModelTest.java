@@ -79,7 +79,7 @@ public class ModelTest {
     @Test
     public void testRelationshipsPass() throws Exception {
         HashMap<Person, String> relations = Model.getInstance().getImmediateRelations(person);
-        assertEquals(2, relations.size());
+        assertEquals(3, relations.size());
         for (Map.Entry<Person, String> entry : relations.entrySet()) {
             assertNotEquals(entry.getKey().getId(), unrelated.getId());
             assertNotEquals(entry.getKey().getId(), dadsGrandpa.getId());
@@ -119,7 +119,7 @@ public class ModelTest {
         Model.getInstance().getSettings().setFemaleEvents(true);
         Model.getInstance().getSettings().setFathersSide(true);
         Event[] events = Model.getInstance().getEvents();
-        assertEquals(events.length, 0);
+        assertEquals(1, events.length);
     }
 
     @Test
@@ -146,16 +146,33 @@ public class ModelTest {
 
     @Test
     public void testSearchPass() throws Exception {
-        EventsResult eventsResult = sp.events(host, port, authToken);
-        assertEquals(16, eventsResult.getData().length);
-        for (int i = 0; i < eventsResult.getData().length; i++) {
-            assertEquals(eventsResult.getData()[i].getClass(), event.getClass());
+        String input = "person";
+        ArrayList<Event> events = Model.getInstance().getFilteredEvents(input);
+        assertEquals(1, events.size());
+        for (Event event : events) {
+            Person currentPerson = Model.getInstance().getPersonFromId(event.getPersonID());
+            assertTrue(currentPerson.getFirstName().toLowerCase().contains(input) ||
+                    currentPerson.getLastName().toLowerCase().contains(input) ||
+                    event.getCountry().toLowerCase().contains(input) ||
+                    event.getCity().toLowerCase().contains(input) ||
+                    event.getEventType().toLowerCase().contains(input) ||
+                    Integer.toString(event.getYear()).contains(input));
+        }
+
+        input = "test";
+        ArrayList<Person> persons = Model.getInstance().getFilteredPersons(input);
+        assertEquals(6, persons.size());
+        for (Person currentPerson : persons) {
+            assertTrue(currentPerson.getFirstName().toLowerCase().contains(input) || currentPerson.getLastName().toLowerCase().contains(input));
         }
     }
 
     @Test
-    public void testSearchFail() throws Exception {
-        EventsResult eventsResult = sp.events(host, port, badAuthToken);
-        assertNull(eventsResult.getData());
+    public void testSearchAbnormal() throws Exception {
+        String input = "asdf";
+        ArrayList<Event> events = Model.getInstance().getFilteredEvents(input);
+        assertEquals(0, events.size());
+        ArrayList<Person> persons = Model.getInstance().getFilteredPersons(input);
+        assertEquals(0, persons.size());
     }
 }

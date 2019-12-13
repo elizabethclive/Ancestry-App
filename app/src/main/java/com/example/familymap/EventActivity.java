@@ -9,7 +9,6 @@ import Model.Model;
 
 public class EventActivity extends AppCompatActivity {
     private MapFragment mapFragment;
-    // TODO: FIX BACK BUTTON
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

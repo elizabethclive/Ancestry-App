@@ -19,8 +19,7 @@ import Util.ListItem;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<String> listDataHeader; // header titles
-    // child data in format of header title, child title
+    private List<String> listDataHeader;
     private HashMap<String, List<ListItem>> listDataChild;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
@@ -67,8 +66,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.listDataChild.get(this.listDataHeader.get(groupPosition))
-                .size();
+        return this.listDataChild.get(this.listDataHeader.get(groupPosition)).size();
     }
 
     @Override

@@ -1,5 +1,13 @@
 package Model;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
+import com.example.familymap.R;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,6 +94,18 @@ public class Model {
         return returnPersons;
     }
 
+    public ArrayList<Person> getFilteredPersons(String input) {
+        Person[] persons = getPersons();
+        ArrayList<Person> finalPersons = new ArrayList<>();
+        for (Person person : persons) {
+            if (person.getFirstName().toLowerCase().contains(input) ||
+                    person.getLastName().toLowerCase().contains(input)) {
+                finalPersons.add(person);
+            }
+        }
+        return finalPersons;
+    }
+
     public boolean isPersonAllowed(String personID, Person[] currentPersons) {
         for (Person tempPerson : currentPersons) {
             if (tempPerson.getId().equals(personID)) {
@@ -133,6 +153,24 @@ public class Model {
         }
 
         return returnEvents;
+    }
+
+    public ArrayList<Event> getFilteredEvents(String input) {
+        input = input.toLowerCase();
+        Event[] events = getEvents();
+        ArrayList<Event> finalEvents = new ArrayList<>();
+        for (Event event : events) {
+            Person currentPerson = getPersonFromId(event.getPersonID());
+            if (currentPerson.getFirstName().toLowerCase().contains(input) ||
+                    currentPerson.getLastName().toLowerCase().contains(input) ||
+                    event.getCountry().toLowerCase().contains(input) ||
+                    event.getCity().toLowerCase().contains(input) ||
+                    event.getEventType().toLowerCase().contains(input) ||
+                    Integer.toString(event.getYear()).contains(input)) {
+                finalEvents.add(event);
+            }
+        }
+        return finalEvents;
     }
 
     public ArrayList<Person> getAncestors(Person person, ArrayList<Person> currentPersons) {
@@ -206,6 +244,21 @@ public class Model {
 
     public void setPersonID(String personID) {
         this.personID = personID;
+    }
+
+    public Drawable getGenderIcon(Context context, String gender) {
+        Drawable genderIcon;
+        if (gender.equals("m")) {
+            genderIcon = new IconDrawable(context, FontAwesomeIcons.fa_male).
+                    colorRes(R.color.male_icon).sizeDp(40);
+        } else if (gender.equals("f")) {
+            genderIcon = new IconDrawable(context, FontAwesomeIcons.fa_female).
+                    colorRes(R.color.female_icon).sizeDp(40);
+        } else {
+            genderIcon = new IconDrawable(context, FontAwesomeIcons.fa_map_marker).
+                    colorRes(R.color.male_icon).sizeDp(40);
+        }
+        return genderIcon;
     }
 
     public Settings getSettings() {

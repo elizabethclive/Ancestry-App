@@ -84,18 +84,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(viewType, parent, false);
-        // changed R.id.list_item to viewType
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ListItem listItem = matches.get(position);
-//        holder.
         ((MyViewHolder) holder).bindData(matches.get(position));
-        // do stuff
-//        holder.searchListItem.s
-
     }
 
 
