@@ -48,9 +48,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final ListItem child = (ListItem) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.context
+            LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item, null);
+            convertView = layoutInflater.inflate(R.layout.list_item, null);
         }
 
         TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);

@@ -47,7 +47,6 @@ public class PersonActivity extends AppCompatActivity {
         textViewLastName = v.findViewById(R.id.last_name);
         textViewGender = v.findViewById(R.id.gender);
 //        colors.addAll(Arrays.asList(R.color.rose, HUE_RED, HUE_ORANGE, HUE_YELLOW, HUE_GREEN, HUE_CYAN, HUE_AZURE, HUE_BLUE, HUE_VIOLET, HUE_MAGENTA));
-        Model.getInstance().setInEventActivity(false);
 
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
         prepareListData();
@@ -62,7 +61,6 @@ public class PersonActivity extends AppCompatActivity {
                 ListItem listItem = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
                 if (header.equals("Life Events")) {
                     Model.getInstance().setSelectedEvent(Model.getInstance().getEventFromId(listItem.getId()));
-                    Model.getInstance().setInEventActivity(true);
                     Intent myIntent = new Intent(PersonActivity.this, EventActivity.class);
                     startActivity(myIntent);
                 } else {

@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="55dip"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
     android:orientation="vertical" >
 
 <!--    image view and two text views-->
@@ -10,7 +12,7 @@
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_height="80dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/icon"
@@ -29,21 +31,16 @@
             <TextView
                 android:id="@+id/lblListItem"
                 android:layout_width="fill_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:textSize="17dip"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:textSize="15dip"
                 android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
 
             <TextView
                 android:id="@+id/lblListItem2"
                 android:layout_width="fill_parent"
-                android:layout_height="30dp"
-                android:gravity="center_vertical"
-                android:textSize="17dip"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:layout_height="wrap_content"
+                android:textSize="15dip"
                 android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" />
 
         </LinearLayout>

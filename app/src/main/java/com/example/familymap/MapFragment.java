@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -23,7 +20,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -32,10 +28,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import Model.Event;
 import Model.Model;
@@ -62,6 +56,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private RelativeLayout banner;
     private ArrayList<Float> colors = new ArrayList();
     private Event[] events;
+    private Person[] persons;
+    ArrayList<Polyline> lines = new ArrayList<>();
 
     public static MapFragment newInstance(){
         return new MapFragment();
@@ -124,18 +120,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-
         if (mMap == null) return;
         mMap.clear();
-
         addEvents();
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         addEvents();
+        if (Model.getInstance().getInEventActivity()) addLines(Model.getInstance().getSelectedEvent().getId());
     }
 
     public void addEvents() {
@@ -159,9 +153,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     void addMarker(String city, LatLng latLng, String eventType, String eventID) {
-        if (eventID.equals("Mrs_Jones_Surf")) {
-            System.out.println("adsfs");
-        }
         MarkerOptions options = new MarkerOptions().position(latLng).title(city);
         eventType = eventType.toLowerCase();
         if (!Model.getInstance().getColorMap().containsKey(eventType)) {
@@ -180,8 +171,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public boolean onMarkerClick(Marker marker) {
 //                clearLines();
+                for (Polyline line : lines) {
+                    line.remove();
+                }
+                lines.clear();
                 String eventID = (String)marker.getTag();
                 setDisplayText(eventID);
+                persons = Model.getInstance().getPersons();
                 addLines(eventID);
                 return false;
             }
@@ -190,7 +186,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     void setDisplayText(String eventID) {
         Event event = null;
-        Person[] persons = Model.getInstance().getPersons();
+        persons = Model.getInstance().getPersons();
         Drawable genderIcon;
         for (int i = 0; i < events.length; i++) {
             if (events[i].getId() == eventID) {
@@ -234,8 +230,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     void addSpouseLines(String eventID) {
         Event event = Model.getInstance().getEventFromId(eventID);
         Person person = Model.getInstance().getPersonFromId(event.getPersonID());
-        if (person.getSpouseID() != null) {
-//            Event personEvent = Model.getInstance().getPersonEvents(person).get(0);
+        if (person.getSpouseID() != null && Model.getInstance().isPersonAllowed(person.getSpouseID(), persons)) {
             LatLng selectedPersonLoc = new LatLng(event.getLatitude(), event.getLongitude());
 
             Person spouse = Model.getInstance().getPersonFromId(person.getSpouseID());
@@ -246,11 +241,47 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     void addFamilyLines(String eventID) {
+        Event event = Model.getInstance().getEventFromId(eventID);
+        Person person = Model.getInstance().getPersonFromId(event.getPersonID());
+        addParentLines(event, person, 12);
+    }
 
+    void addParentLines(Event event, Person person, Integer lineWidth) {
+        if (lineWidth > 4) lineWidth -= 3; else lineWidth = 2;
+        if (person.getFatherID() != null && Model.getInstance().isPersonAllowed(person.getFatherID(), persons)) {
+            LatLng personLoc = new LatLng(event.getLatitude(), event.getLongitude());
+            Person father = Model.getInstance().getPersonFromId(person.getFatherID());
+            if (Model.getInstance().getPersonEvents(father).size() > 0) {
+                Event fatherEvent = Model.getInstance().getPersonEvents(father).get(0);
+                LatLng fatherLoc = new LatLng(fatherEvent.getLatitude(), fatherEvent.getLongitude());
+                drawLine(personLoc, fatherLoc, lineWidth, Color.BLUE);
+                addParentLines(fatherEvent, father, lineWidth-4);
+            }
+        }
+        if (person.getMotherID() != null && Model.getInstance().isPersonAllowed(person.getMotherID(), persons)) {
+            LatLng personLoc = new LatLng(event.getLatitude(), event.getLongitude());
+            Person mother = Model.getInstance().getPersonFromId(person.getMotherID());
+            if (Model.getInstance().getPersonEvents(mother).size() > 0) {
+                Event motherEvent = Model.getInstance().getPersonEvents(mother).get(0);
+                LatLng motherLoc = new LatLng(motherEvent.getLatitude(), motherEvent.getLongitude());
+                drawLine(personLoc, motherLoc, lineWidth, Color.BLUE);
+                addParentLines(motherEvent, mother, lineWidth - 4);
+            }
+        }
+        return;
     }
 
     void addLifeStoryLines(String eventID) {
-
+        Event event = Model.getInstance().getEventFromId(eventID);
+        Person person = Model.getInstance().getPersonFromId(event.getPersonID());
+        ArrayList<Event> events = Model.getInstance().getPersonEvents(person);
+        LatLng oldEvent;
+        LatLng currentEvent;
+        for (int i = 1; i < events.size(); i++) {
+            oldEvent = new LatLng(events.get(i-1).getLatitude(), events.get(i-1).getLongitude());
+            currentEvent = new LatLng(events.get(i).getLatitude(), events.get(i).getLongitude());
+            drawLine(oldEvent, currentEvent, 10, Color.GREEN);
+        }
     }
 
     void drawLine(LatLng point1, LatLng point2, Integer lineWidth, Integer color) {
@@ -258,6 +289,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .add(point1, point2)
                 .width(lineWidth)
                 .color(color));
+        lines.add(line);
     }
 
     void clearLines() {

@@ -21,6 +21,17 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 dependencies {
@@ -33,7 +44,12 @@ dependencies {
     implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
+
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'com.google.code.gson:gson:2.2.+'
-//    implementation 'com.androidx.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:29.0.0'
+//    implementation fileTree(include: ['*.jar'], dir: 'libs')
+//    implementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+//    implementation files('libs/gson-2.6.2.jar')
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 }

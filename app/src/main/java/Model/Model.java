@@ -1,6 +1,5 @@
 package Model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +22,7 @@ public class Model {
     private String firstName;
     private String lastName;
 
-    // Login
+    // Global
     private Map<String, Person> personsMap = new HashMap<String, Person>();
     private Map<String, Event> eventsMap = new HashMap<String, Event>();
 
@@ -87,6 +86,15 @@ public class Model {
         return returnPersons;
     }
 
+    public boolean isPersonAllowed(String personID, Person[] currentPersons) {
+        for (Person tempPerson : currentPersons) {
+            if (tempPerson.getId().equals(personID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setPersons(Person[] persons) {
         this.persons = persons;
         for (Person person : persons) {
@@ -98,7 +106,6 @@ public class Model {
         ArrayList<Event> currentEvents = new ArrayList<Event>();
         ArrayList<Event> returnEventsList = new ArrayList<Event>();
         currentEvents.addAll(Arrays.asList(events));
-//        Person userPerson = getPersonFromId(personID);
         Person[] currentPersons = getPersons();
         currentEvents = filterEvents(currentPersons);
 
@@ -214,11 +221,7 @@ public class Model {
     }
 
     public Person getPersonFromId(String personID) {
-        for (int i = 0; i < persons.length; i++) {
-            if (persons[i].getId().equals(personID)) {
-                return persons[i];
-            }
-        }
+        if (personsMap.containsKey(personID)) return personsMap.get(personID);
         return null;
     }
 
@@ -231,11 +234,7 @@ public class Model {
     }
 
     public Event getEventFromId(String eventID) {
-        for (int i = 0; i < events.length; i++) {
-            if (events[i].getId().equals(eventID)) {
-                return events[i];
-            }
-        }
+        if (eventsMap.containsKey(eventID)) return eventsMap.get(eventID);
         return null;
     }
 
@@ -261,7 +260,7 @@ public class Model {
 
     public void addToColorMap(String eventType) {
         colorMap.put(eventType, colorIndex);
-        if (colorIndex == colors.size() - 1) colorIndex = 0; else colorIndex++;
+        if (colorIndex == colors.size() - 2) colorIndex = 0; else colorIndex++;
     }
 
     public String getFullName(Person currentPerson) {
@@ -292,10 +291,6 @@ public class Model {
                 Event temp = currentEvents.get(currentEvents.size()-1);
                 currentEvents.set(currentEvents.size()-1, currentEvent);
                 currentEvents.set(i, temp);
-//            } else if (i > 0 && !currentEvents.get(i-1).getEventType().toLowerCase().equals("birth") && !currentEventType.equals("death") && currentEvent.getYear() < currentEvents.get(i-1).getYear()) {
-//                Event temp = currentEvents.get(i-1);
-//                currentEvents.set(i-1, currentEvent);
-//                currentEvents.set(i, temp);
             } else if (i > 0 && !currentEvents.get(i-1).getEventType().toLowerCase().equals("birth") && !currentEventType.equals("death") && currentEvent.getYear() == currentEvents.get(i-1).getYear()) {
                 if (currentEvent.getEventType().compareToIgnoreCase(currentEvents.get(i-1).getEventType()) < 0) {
                     Event temp = currentEvents.get(i-1);
@@ -341,5 +336,26 @@ public class Model {
 
     private Model() {
         this.setSettings(new Settings());
+    }
+
+    public void clear() {
+        port = null;
+        host = null;
+        authToken = null;
+        userName = null;
+        personID = null;
+        persons = null;
+        events = null;
+        firstName = null;
+        lastName = null;
+        personsMap = new HashMap<String, Person>();
+        eventsMap = new HashMap<String, Event>();
+        settings = new Settings();
+        selectedPerson = null;
+        selectedEvent = null;
+        inEventActivity = null;
+        colorMap = new HashMap<>();
+        colors = new ArrayList<String>();
+        colorIndex = 0;
     }
 }

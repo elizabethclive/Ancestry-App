@@ -2,9 +2,12 @@ package com.example.familymap;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import Model.Model;
@@ -19,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private Switch maleEventsSwitch;
     private Switch femaleEventsSwitch;
     private Settings settings;
+    private LinearLayout logout;
 
 
     @Override
@@ -38,9 +42,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mothersSideSwitch = v.findViewById(R.id.mothers_side);
         maleEventsSwitch = v.findViewById(R.id.male_events);
         femaleEventsSwitch = v.findViewById(R.id.female_events);
+        logout = v.findViewById(R.id.logout_inner_wrapper);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Model.getInstance().clear();
+                finish();
+                Intent intent = new Intent(view.getContext(), MainActivity.class);
+                intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
 
         prepareData();
-
     }
 
     @Override

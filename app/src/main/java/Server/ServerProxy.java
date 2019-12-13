@@ -12,8 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import Model.AuthToken;
-import Model.Person;
-import Util.EventsRequest;
 import Util.EventsResult;
 import Util.JsonHandler;
 import Util.LoginRequest;
